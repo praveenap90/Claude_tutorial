@@ -1,0 +1,1771 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0;font:14px system-ui,sans-serif}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<title>Claude Learning Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: sticky top bar with progress, a left rail of lessons beside one lesson at a time; the rail becomes a scrolling strip on phones. */
+:root{
+  --bg:#EEF2F1; --surface:#FFFFFF; --surface2:#E3EAE8; --ink:#10201D; --muted:#4A5E5A; --line:#C8D5D2;
+  --accent:#0B6B5D; --accent-soft:#D3EAE4; --on-accent:#FFFFFF;
+  --warm:#9A4A07; --warm-soft:#FBE8D3;
+  --good:#17703A; --good-soft:#D8F0E1; --bad:#A8231B; --bad-soft:#FBDAD6;
+  --c1:#2563A8; --c1s:#DCE9F7; --c2:#7A3FA0; --c2s:#EADFF3; --c3:#8A5700; --c3s:#F8E8C6; --c4:#B03A5B; --c4s:#F8DCE3; --c5:#0B6B5D; --c5s:#D3EAE4; --c6:#3F7D1E; --c6s:#E1F0D4; --c7:#A5410C; --c7s:#FBE0CF;
+  --font-display:"Bricolage Grotesque","Trebuchet MS",system-ui,sans-serif;
+  --font-body:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0C1514; --surface:#131F1D; --surface2:#1B2B29; --ink:#E6F0EE; --muted:#9DB3AF; --line:#27413D;
+    --accent:#4FD1B5; --accent-soft:#143730; --on-accent:#06201B;
+    --warm:#F2A65A; --warm-soft:#3A2815;
+    --good:#5FD38A; --good-soft:#12301E; --bad:#FF8F86; --bad-soft:#3A1816;
+  --c1:#7FB2F0; --c1s:#16283D; --c2:#C79CEB; --c2s:#2A1D38; --c3:#E8B84F; --c3s:#38290D; --c4:#F08BA6; --c4s:#3A1A24; --c5:#4FD1B5; --c5s:#143730; --c6:#8FD35F; --c6s:#1F3010; --c7:#F59A62; --c7s:#3A2010;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0C1514; --surface:#131F1D; --surface2:#1B2B29; --ink:#E6F0EE; --muted:#9DB3AF; --line:#27413D;
+  --accent:#4FD1B5; --accent-soft:#143730; --on-accent:#06201B;
+  --warm:#F2A65A; --warm-soft:#3A2815;
+  --good:#5FD38A; --good-soft:#12301E; --bad:#FF8F86; --bad-soft:#3A1816;
+  --c1:#7FB2F0; --c1s:#16283D; --c2:#C79CEB; --c2s:#2A1D38; --c3:#E8B84F; --c3s:#38290D; --c4:#F08BA6; --c4s:#3A1A24; --c5:#4FD1B5; --c5s:#143730; --c6:#8FD35F; --c6s:#1F3010; --c7:#F59A62; --c7s:#3A2010;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--font-body);font-size:1rem;line-height:1.65;padding-inline:clamp(16px,3vw,32px);padding-block:0 56px}
+h1,h2,h3{font-family:var(--font-display);line-height:1.15;text-wrap:balance;margin:0}
+h2{font-size:clamp(1.6rem,3.4vw,2.1rem);font-weight:700;letter-spacing:-0.01em}
+h3{font-size:1.15rem;font-weight:600}
+p{margin:0}
+a{color:var(--accent)}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px;border-radius:6px}
+.wrap{max-width:1180px;margin-inline:auto}
+
+/* top bar */
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:5;background:var(--bg);border-bottom:1px solid var(--line);padding-block:12px}
+.top-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.brand{font-family:var(--font-display);font-weight:700;font-size:1.3rem;letter-spacing:-0.01em}
+.brand small{display:block;font-family:var(--font-body);font-weight:400;font-size:.8rem;color:var(--muted);letter-spacing:0}
+.prog{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 220px;max-width:360px}
+.meter{flex:1;height:8px;background:var(--surface2);border-radius:99px;overflow:hidden}
+.meter span{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
+.prog-label{font-size:.85rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
+
+/* shell */
+.shell{display:grid;grid-template-columns:16.5rem minmax(0,1fr);gap:32px;padding-top:24px}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 5.5rem);align-self:start;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 100px);overflow:auto}
+.rail-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:12px 12px 4px}
+.rail button{display:flex;align-items:center;gap:10px;text-align:left;background:none;border:0;border-radius:8px;padding:9px 12px;cursor:pointer;color:var(--ink);min-width:0}
+.rail button:hover{background:var(--surface2)}
+.rail button[aria-current="page"]{background:var(--accent-soft);font-weight:600}
+.rail .t{flex:1;min-width:0}
+.rail .m{font-size:.75rem;color:var(--muted);font-variant-numeric:tabular-nums}
+.dot{width:20px;height:20px;border-radius:50%;border:2px solid var(--line);flex:none;display:grid;place-items:center;font-size:.7rem;line-height:1;color:var(--on-accent)}
+.dot.done{background:var(--accent);border-color:var(--accent)}
+@media (max-width:860px){
+  .shell{grid-template-columns:minmax(0,1fr);gap:16px}
+  .rail{position:static;flex-direction:row;overflow-x:auto;max-height:none;gap:6px;padding-bottom:6px;scrollbar-width:thin}
+  .rail-label{display:none}
+  .rail button{flex:none;border:1px solid var(--line);white-space:nowrap}
+  .rail .m{display:none}
+}
+
+/* lessons */
+.lesson{display:flex;flex-direction:column;gap:24px;min-width:0}
+.lesson[hidden]{display:none}
+.lead{font-size:1.15rem;color:var(--muted);max-width:60ch}
+.lesson p,.lesson li{max-width:68ch}
+.eyebrow{font-size:.75rem;text-transform:uppercase;letter-spacing:.1em;color:var(--accent);font-weight:600;margin-bottom:6px}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.card h3{margin-bottom:2px}
+.card p,.card li{color:var(--muted);font-size:.96rem}
+.card ul{margin:0;padding-left:1.1em;display:flex;flex-direction:column;gap:4px}
+.tag{display:inline-block;font-size:.72rem;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--surface2);color:var(--muted);align-self:flex-start}
+.tag.go{background:var(--good-soft);color:var(--good)}
+.tag.warn{background:var(--warm-soft);color:var(--warm)}
+.callout{background:var(--warm-soft);color:var(--ink);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:2px}
+.callout b{color:var(--warm)}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:clamp(16px,3vw,24px);display:flex;flex-direction:column;gap:16px;min-width:0}
+.panel-title{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.panel-title span{font-size:.85rem;color:var(--muted)}
+.btn{background:var(--accent);color:var(--on-accent);border:0;border-radius:8px;padding:10px 18px;min-height:44px;font-weight:600;cursor:pointer}
+.btn:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent;color:var(--ink);border:1px solid var(--line)}
+.btn.ghost:hover{background:var(--surface2);filter:none}
+.btn.small{padding:6px 14px;min-height:38px;font-size:.88rem}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{background:var(--surface);border:1px solid var(--line);border-radius:99px;padding:8px 16px;min-height:40px;cursor:pointer;font-size:.95rem}
+.chip:hover{background:var(--surface2)}
+.chip[aria-pressed="true"],.chip[aria-selected="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+
+/* prompt blocks */
+.prompt{background:var(--surface2);border-radius:10px;display:flex;flex-direction:column;min-width:0}
+.prompt-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:8px 8px 0 14px;font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted)}
+.prompt-text{font-family:var(--font-mono);font-size:.88rem;line-height:1.6;padding:6px 14px 14px;white-space:pre-wrap;overflow-wrap:anywhere}
+.why{font-size:.9rem;color:var(--muted)}
+.why b{color:var(--ink)}
+.pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px}
+.pair .prompt-head b{font-weight:600}
+.weak .prompt-head{color:var(--bad)}
+.strong .prompt-head{color:var(--good)}
+
+/* lab */
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:20px}
+@media (max-width:860px){.lab-grid{grid-template-columns:minmax(0,1fr)}}
+.row{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;align-items:start}
+.row label.name{font-weight:600;font-size:.92rem;grid-column:2}
+.row input[type=checkbox]{width:20px;height:20px;margin-top:2px;accent-color:var(--accent);grid-row:1 / span 2}
+.row input[type=text],textarea,select{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;grid-column:2;min-width:0}
+textarea{resize:vertical;min-height:72px}
+.fields{display:flex;flex-direction:column;gap:12px}
+.strength{display:flex;align-items:center;gap:10px;font-size:.9rem}
+.strength .bars{display:flex;gap:4px}
+.strength .bars i{width:28px;height:8px;border-radius:4px;background:var(--surface2)}
+.strength .bars i.on{background:var(--accent)}
+.guess{font-size:.9rem;color:var(--muted)}
+.guess b{color:var(--warm)}
+
+/* radios as cards */
+.opts{display:flex;flex-direction:column;gap:8px}
+.opt{display:flex;gap:10px;align-items:flex-start;text-align:left;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:12px 16px;min-height:48px;cursor:pointer;width:100%}
+.opt:hover{background:var(--surface2)}
+.opt[aria-pressed="true"]{border-color:var(--accent);background:var(--accent-soft)}
+.opt.right{border-color:var(--good);background:var(--good-soft)}
+.opt.wrong{border-color:var(--bad);background:var(--bad-soft)}
+.result{background:var(--accent-soft);border-radius:10px;padding:14px 16px;display:flex;flex-direction:column;gap:4px}
+.result h3{color:var(--accent)}
+.feedback{border-radius:10px;padding:12px 14px;font-size:.95rem}
+.feedback.ok{background:var(--good-soft)}
+.feedback.no{background:var(--bad-soft)}
+
+/* checklist */
+.check{display:flex;flex-direction:column;gap:6px;list-style:none;padding:0;margin:0}
+.check label{display:flex;gap:10px;align-items:flex-start;cursor:pointer;padding:8px 10px;border-radius:8px}
+.check label:hover{background:var(--surface2)}
+.check input{width:20px;height:20px;margin-top:3px;accent-color:var(--accent);flex:none}
+.check input:checked + span{color:var(--muted);text-decoration:line-through}
+
+/* tables */
+.tablewrap{overflow-x:auto;border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+table{border-collapse:collapse;width:100%;min-width:520px}
+th,td{text-align:left;padding:10px 14px;border-bottom:1px solid var(--line);vertical-align:top;font-size:.94rem}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);background:var(--surface2)}
+tr:last-child td{border-bottom:0}
+
+/* project mock */
+.mock{border:1px dashed var(--line);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.mock .bar{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
+.mock .bar span{background:var(--surface2);border-radius:6px;padding:2px 8px}
+
+/* plain-language helpers */
+.tsize{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
+.tsize button{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:38px;min-height:38px;cursor:pointer;font-weight:600;line-height:1}
+.tsize button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
+.short{background:var(--accent-soft);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
+.short .lbl{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--accent)}
+.short p{max-width:62ch}
+.short .like{font-size:.98rem}
+.short .like b{color:var(--accent)}
+.gl{display:inline;background:none;border:0;border-bottom:2px dotted var(--accent);color:inherit;font:inherit;padding:0;cursor:help;border-radius:0}
+.pop{position:fixed;z-index:20;max-width:min(320px,calc(100vw - 32px));background:var(--surface);color:var(--ink);border:1px solid var(--accent);border-radius:12px;padding:12px 14px;box-shadow:0 8px 28px rgba(0,0,0,.22);font-size:.92rem;line-height:1.5}
+.pop b{display:block;margin-bottom:2px}
+.qc{border:2px solid var(--accent-soft);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:10px;background:var(--surface)}
+.reply{white-space:pre-wrap;background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:14px;font-size:.95rem;overflow-wrap:anywhere}
+details.deeper{border:1px solid var(--line);border-radius:12px;background:var(--surface)}
+details.deeper>summary{cursor:pointer;padding:12px 16px;font-weight:600;min-height:44px}
+details.deeper>div{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+
+/* overview */
+.mods{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:16px}
+.mod{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:16px;display:flex;flex-direction:column;gap:8px;min-width:0;align-content:start}
+.mod-start{--k:var(--c1);--ks:var(--c1s)}
+.mod-work{--k:var(--c5);--ks:var(--c5s)}
+.mod-extend{--k:var(--c2);--ks:var(--c2s)}
+.mod-further{--k:var(--c3);--ks:var(--c3s)}
+.mod-head{display:flex;align-items:baseline;justify-content:space-between;gap:10px;flex-wrap:wrap}
+.mod-head h3{color:var(--k)}
+.mod-count{font-size:.78rem;font-weight:600;background:var(--ks);color:var(--k);border-radius:99px;padding:2px 10px;font-variant-numeric:tabular-nums}
+.mod-blurb{font-size:.9rem;color:var(--muted)}
+.lrow{display:grid;grid-template-columns:20px minmax(0,1fr) auto;gap:10px;align-items:start;text-align:left;background:none;border:0;border-radius:8px;padding:8px;cursor:pointer;width:100%;color:var(--ink)}
+.lrow:hover{background:var(--surface2)}
+.lrow b{display:block;font-weight:600}
+.lrow small{display:block;color:var(--muted);font-size:.84rem;line-height:1.4}
+.lrow .tm{font-size:.76rem;color:var(--muted);font-variant-numeric:tabular-nums;white-space:nowrap}
+.cont{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.cont h3{margin-bottom:2px}
+
+/* tokens and context */
+.stack{display:flex;height:22px;border-radius:99px;overflow:hidden;background:var(--surface2)}
+.stack i{display:block;height:100%;transition:width .25s}
+.legend{display:flex;flex-wrap:wrap;gap:6px 16px;font-size:.85rem;color:var(--muted)}
+.legend span::before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--k);margin-right:6px}
+.k-set{--k:var(--c3)}.k-msg{--k:var(--c1)}.k-file{--k:var(--c2)}.k-web{--k:var(--c5)}
+.stack i{background:var(--k)}
+.rng{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;align-items:center}
+.rng label{font-weight:600;font-size:.92rem}
+.rng output{font-variant-numeric:tabular-nums;color:var(--muted);font-size:.9rem}
+.rng input[type=range]{grid-column:1 / -1;width:100%;accent-color:var(--accent)}
+.rng small{grid-column:1 / -1;color:var(--muted);font-size:.78rem}
+.stat{font-family:var(--font-display);font-size:1.9rem;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.1}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px}
+.stats div{background:var(--surface2);border-radius:10px;padding:12px 14px;display:flex;flex-direction:column;gap:2px}
+.stats small{color:var(--muted);font-size:.8rem}
+
+/* flow diagram */
+.flow{display:flex;align-items:stretch;gap:10px}
+.fbox{background:var(--surface2);border-radius:10px;padding:10px 12px;display:flex;flex-direction:column;gap:2px;font-weight:600;justify-content:center;min-width:0;flex:1}
+.fbox small{font-weight:400;color:var(--muted);font-size:.8rem}
+.fbox.claude{background:var(--accent);color:var(--on-accent);flex:.6}
+.fbox.sk{background:var(--c3s);color:var(--c3)}
+.fbox.cn{background:var(--c5s);color:var(--c5)}
+.fplugin{border:2px dashed var(--c2);border-radius:14px;padding:22px 10px 10px;position:relative;display:flex;gap:10px;flex:2.2;min-width:0}
+.plabel{position:absolute;top:-11px;left:12px;background:var(--surface);padding:0 8px;font-size:.72rem;text-transform:uppercase;letter-spacing:.08em;color:var(--c2);font-weight:600}
+.farrow{align-self:center;color:var(--muted);font-size:1.3rem}
+.farrow::before{content:"\2192"}
+@media (max-width:860px){.flow{flex-direction:column}.fplugin{flex-direction:column}.farrow::before{content:"\2193"}}
+
+/* categories, table, map */
+.cat-Chat{--k:var(--c1);--ks:var(--c1s)}
+.cat-Create{--k:var(--c2);--ks:var(--c2s)}
+.cat-Find{--k:var(--c3);--ks:var(--c3s)}
+.cat-Personalize{--k:var(--c4);--ks:var(--c4s)}
+.cat-Connect{--k:var(--c5);--ks:var(--c5s)}
+.cat-Automate{--k:var(--c6);--ks:var(--c6s)}
+.cat-Products{--k:var(--c7);--ks:var(--c7s)}
+.tag[class*="cat-"]{background:var(--ks);color:var(--k)}
+td.mono{font-family:var(--font-mono);font-size:.8rem;min-width:240px}
+td.nm{font-weight:600;white-space:nowrap}
+td.what{min-width:220px}
+td.use{min-width:200px}
+.map{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:14px}
+.mcol{background:var(--ks);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:10px;min-width:0;align-content:start}
+.mcol h3{color:var(--k);display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.mcol h3 span{font-family:var(--font-body);font-size:.8rem;font-weight:600}
+.mcol .sub{font-size:.82rem;color:var(--muted);margin-top:-6px}
+.mpill{background:var(--surface);border:1px solid var(--k);color:var(--ink);border-radius:10px;padding:8px 10px;text-align:left;cursor:pointer;display:flex;flex-direction:column;gap:2px;min-width:0}
+.mpill b{font-weight:600;font-size:.92rem}
+.mpill small{font-size:.78rem;color:var(--muted)}
+.mpill:hover{background:var(--k);color:var(--bg)}
+.mpill:hover small{color:var(--bg)}
+
+/* folder trees and steps */
+.tree{font-family:var(--font-mono);font-size:.84rem;line-height:1.6;white-space:pre;overflow-x:auto;padding:12px 14px;background:var(--surface2);border-radius:10px;margin:0}
+.tree-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);margin-bottom:6px}
+.steps{list-style:none;counter-reset:st;padding:0;margin:0;display:flex;flex-direction:column;gap:10px}
+.steps li{counter-increment:st;display:grid;grid-template-columns:28px minmax(0,1fr);gap:10px;align-items:start;max-width:none}
+.steps li::before{content:counter(st);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:600;font-size:.85rem}
+.sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.sched label{display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:600}
+.sched select,.sched input{grid-column:auto;font-weight:400;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
+
+/* pager */
+.pager{display:flex;gap:12px;flex-wrap:wrap;justify-content:space-between;align-items:center;border-top:1px solid var(--line);padding-top:20px;margin-top:8px}
+.pager .mid{display:flex;gap:8px}
+.quiz-q{font-family:var(--font-display);font-size:1.25rem;font-weight:600}
+.score{font-family:var(--font-display);font-size:2.4rem;font-weight:700;color:var(--accent);font-variant-numeric:tabular-nums}
+.search{max-width:420px}
+.search input{width:100%;background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:10px 12px}
+dl{margin:0;display:grid;gap:10px}
+dl .g{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
+dt{font-weight:600}
+dd{margin:2px 0 0;color:var(--muted);font-size:.95rem}
+kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2);border-radius:5px;padding:1px 6px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+
+</head>
+<body>
+<div class="wrap">
+  <header class="top">
+    <div class="top-row">
+      <div class="brand">Claude Learning Guide<small>Fourteen short lessons in four parts, each with something to try</small></div>
+      <div class="tsize" role="group" aria-label="Text size"><span>Text size</span><button type="button" data-fs="100" aria-pressed="true" aria-label="Normal text" style="font-size:.85rem">A</button><button type="button" data-fs="118" aria-pressed="false" aria-label="Large text" style="font-size:1.05rem">A</button><button type="button" data-fs="136" aria-pressed="false" aria-label="Extra large text" style="font-size:1.25rem">A</button></div>
+      <div class="prog"><div class="meter" role="progressbar" aria-label="Lessons completed" aria-valuemin="0" aria-valuemax="14" id="meterbox"><span id="meterfill"></span></div><div class="prog-label" id="proglabel">0 of 14 done</div></div>
+    </div>
+  </header>
+
+  <div class="shell">
+    <nav class="rail" id="rail" aria-label="Lessons"></nav>
+
+    <main id="main">
+
+      <!-- OVERVIEW -->
+      <section class="lesson" id="overview" hidden>
+        <div>
+          <div class="eyebrow">Start here</div>
+          <h2>Learn Claude, one step at a time</h2>
+          <p class="lead" style="margin-top:10px">Fourteen short lessons in four parts, each with something to try. Go in order, or jump to what you need.</p>
+        </div>
+        <div class="short"><span class="lbl">How this guide works</span>
+          <p><b>1.</b> Read the short version at the top of each lesson. <b>2.</b> Try the interactive example. <b>3.</b> Answer the quick check at the bottom.</p>
+          <p class="like">Underlined words have a plain-English meaning. Tap one to see it. Use Text size at the top if you want bigger letters.</p></div>
+        <div class="panel cont" id="ovnext"></div>
+        <div class="mods" id="ovmods"></div>
+        <div class="grid">
+          <div class="card"><h3>Feature guide</h3><p>Every Claude feature in one place, as cards, a table, or a color-coded map.</p><div><button type="button" class="btn ghost small" data-goto="features">Open the feature guide</button></div></div>
+          <div class="card"><h3>Glossary</h3><p>Plain definitions for terms like token, connector, and MCP.</p><div><button type="button" class="btn ghost small" data-goto="glossary">Open the glossary</button></div></div>
+        </div>
+      </section>
+
+      <!-- 1 MEET -->
+      <section class="lesson" id="meet">
+        <div>
+          <div class="eyebrow">Lesson 1</div>
+          <h2>Meet Claude</h2>
+          <p class="lead" style="margin-top:10px">Claude is an AI assistant made by Anthropic. You write to it in plain language, attach files if you want, and it answers in conversation. It can draft, explain, analyze, plan, and write code with you.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><span class="tag go">Good at</span><h3>Thinking and writing</h3>
+            <ul><li>Drafting and editing text in any tone</li><li>Explaining hard ideas at your level</li><li>Reading long documents and pulling out what matters</li><li>Writing, explaining, and fixing code</li></ul></div>
+          <div class="card"><span class="tag warn">Check its work</span><h3>Facts that matter</h3>
+            <ul><li>Exact figures, dates, quotes, and citations</li><li>Anything recent, unless web search is on</li><li>Legal, medical, and money decisions: use it to prepare, then confirm with a professional</li></ul></div>
+          <div class="card"><span class="tag">By default</span><h3>What it won't do on its own</h3>
+            <ul><li>Look at the web unless search is on</li><li>Carry memory between chats unless memory is on</li><li>Touch your apps unless you connect them</li></ul></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>The model family</h3><span>You can switch models in the middle of a chat</span></div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Model</th><th>Think of it as</th><th>Best for</th></tr></thead>
+            <tbody>
+              <tr><td><b>Haiku</b></td><td>Fast and light</td><td>Quick questions, rewrites, summaries, lots of small tasks</td></tr>
+              <tr><td><b>Sonnet</b></td><td>The everyday model</td><td>Writing, analysis, coding, and documents</td></tr>
+              <tr><td><b>Opus</b></td><td>More depth</td><td>Harder multi-step problems and longer projects</td></tr>
+              <tr><td><b>Fable</b></td><td>Most capable</td><td>The hardest, highest-stakes work. Includes extra safeguards in a few sensitive areas.</td></tr>
+            </tbody></table></div>
+          <p class="why">Which models you see depends on your plan, so check the model picker in the app. A bigger model is not always the right pick: smaller ones usually answer sooner.</p>
+          <p class="why">Want the full list of features and what each is for? <button type="button" class="btn ghost small" data-goto="features">Open the feature guide</button></p>
+        </div>
+
+        <div class="panel" id="picker">
+          <div class="panel-title"><h3>Try it: pick a model</h3><span>Choose what you're about to do</span></div>
+          <div class="opts" id="pickopts"></div>
+          <div class="result" id="pickresult" hidden></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Your first five minutes</h3><span>Ticks save on this device</span></div>
+          <ul class="check" id="firstcheck"></ul>
+        </div>
+        <div class="pager" data-for="meet"></div>
+      </section>
+
+      <!-- 2 PROMPTING -->
+      <section class="lesson" id="prompting" hidden>
+        <div>
+          <div class="eyebrow">Lesson 2</div>
+          <h2>Prompts that get good answers</h2>
+          <p class="lead" style="margin-top:10px">A prompt is whatever you type. Claude can only work with what you give it, so the biggest improvement you can make is telling it more about what you want.</p>
+        </div>
+
+        <dl>
+          <div class="g"><dt>Goal</dt><dd>What you want at the end: an email, a plan, a decision, an explanation.</dd></div>
+          <div class="g"><dt>Context</dt><dd>The situation and the facts Claude can't see. Who, what, when, what you already tried.</dd></div>
+          <div class="g"><dt>Audience</dt><dd>Who will read or use the result. A manager, a ten-year-old, yourself next week.</dd></div>
+          <div class="g"><dt>Format and length</dt><dd>Bullets, a table, two paragraphs, 150 words, three options.</dd></div>
+          <div class="g"><dt>Example</dt><dd>A sample of the style or structure you like. One good example beats a paragraph of description.</dd></div>
+        </dl>
+
+        <div class="pair">
+          <div class="prompt weak"><div class="prompt-head"><b>Vague</b></div><p class="prompt-text">Write about dogs.</p></div>
+          <div class="prompt strong"><div class="prompt-head"><b>Specific</b><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">Write a 150-word intro for a newsletter aimed at first-time dog owners. Friendly tone, one practical tip about the first week at home, and end with a question readers can reply to.</p></div>
+        </div>
+
+        <div class="panel" id="lab">
+          <div class="panel-title"><h3>Prompt Lab</h3><span>Switch pieces on and watch the prompt grow</span></div>
+          <div class="chips" id="labpresets" role="group" aria-label="Sample task"></div>
+          <div class="lab-grid">
+            <div class="fields" id="labfields"></div>
+            <div style="display:flex;flex-direction:column;gap:12px;min-width:0">
+              <div class="prompt"><div class="prompt-head"><span>Your prompt</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="labout"></p></div>
+              <div class="strength"><div class="bars" id="labbars"></div><span id="lablabel"></span></div>
+              <p class="guess" id="labguess"></p>
+            </div>
+          </div>
+          <div><div class="tree-label">What Claude might write <span id="labtier"></span></div><div class="reply" id="labreply"></div><p class="why">Example only, to show the difference. Real replies vary.</p></div>
+        </div>
+
+        <div class="grid">
+          <div class="card"><h3>Follow up, don't start over</h3><p>Treat the first answer as a draft. Short follow-ups work well:</p>
+            <ul><li>"Make it half as long."</li><li>"More formal, and drop the second paragraph."</li><li>"Give me three different versions."</li><li>"What did you assume that I didn't tell you?"</li></ul></div>
+          <div class="card"><h3>Let Claude ask you</h3><p>For big or fuzzy tasks, invite questions first.</p>
+            <div class="prompt"><p class="prompt-text" style="padding-top:12px">I want to plan a career change. Ask me up to five questions, one at a time, before you suggest anything.</p></div></div>
+          <div class="card"><h3>Mark off your materials</h3><p>When you paste text or data, wrap it in simple tags so Claude knows where your instructions end and your material begins.</p>
+            <div class="prompt"><p class="prompt-text" style="padding-top:12px">Summarize the text below in 3 bullets.
+&lt;text&gt;
+...your text here...
+&lt;/text&gt;</p></div></div>
+        </div>
+        <p class="why">More on this in Anthropic's <a href="https://docs.claude.com/en/docs/build-with-claude/prompt-engineering/overview" target="_blank" rel="noopener">prompt engineering guide</a>.</p>
+        <div class="pager" data-for="prompting"></div>
+      </section>
+
+      <!-- 2B TOKENS AND CONTEXT -->
+      <section class="lesson" id="tokens" hidden>
+        <div>
+          <div class="eyebrow">Lesson 3</div>
+          <h2>Tokens and the context window</h2>
+          <p class="lead" style="margin-top:10px">Claude reads and writes in small chunks of text called tokens, and it can only keep so much in view at once. That limit is the context window. Knowing both explains why long chats drift and why big files change how a chat behaves.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><h3>What a token is</h3><p>A chunk of text: often a short word, or part of a longer one. In English, a token is roughly four characters, and 100 tokens is about 75 words. Code, numbers, and other languages can split into more tokens.</p></div>
+          <div class="card"><h3>Input and output</h3><p>Input tokens are what you send: your messages, files, and instructions. Output tokens are what Claude writes back. Developers using the API are billed for the two separately.</p></div>
+          <div class="card"><h3>The context window</h3><p>Everything Claude can consider at one time: your messages, attached files, its own replies, search results, and standing instructions. It is Claude working memory for the current chat.</p></div>
+        </div>
+
+        <div class="panel" id="tkbox">
+          <div class="panel-title"><h3>Try it: estimate tokens</h3><span>A rough guide, not an exact count</span></div>
+          <label for="tkin" class="why">Paste or type some text</label>
+          <textarea id="tkin" rows="5">Hi Dana, thanks for sending the venue contract. I read through it twice. Three things I would like to confirm before we sign: the cancellation deadline, whether catering is included in the per-person price, and who is responsible for cleanup. Could we talk Thursday morning?</textarea>
+          <div class="stats" aria-live="polite">
+            <div><span class="stat" id="tkchars">0</span><small>characters</small></div>
+            <div><span class="stat" id="tkwords">0</span><small>words</small></div>
+            <div><span class="stat" id="tkest">0</span><small id="tkrange">tokens, roughly</small></div>
+            <div><span class="stat" id="tkpages">0</span><small>pages of text</small></div>
+          </div>
+          <p class="why">Estimate uses about four characters per token and about 500 words per page. Real counts depend on the text and the model.</p>
+        </div>
+
+        <div class="panel" id="ctxbox">
+          <div class="panel-title"><h3>Try it: fill a context window</h3><span>Move the sliders and watch it fill</span></div>
+          <div class="rng"><label for="cxwin">Window size</label><output id="cxwinv"></output>
+            <select id="cxwin"><option value="50000">50,000 tokens</option><option value="200000" selected>200,000 tokens</option><option value="1000000">1,000,000 tokens</option></select>
+            <small>Example sizes for practice. Your model and plan set the real limit.</small></div>
+          <div class="rng"><label for="cxmsg">Messages in the chat</label><output id="cxmsgv"></output><input type="range" id="cxmsg" min="0" max="400" value="40" step="2"><small>Assumes about 250 tokens per message, yours and Claude's together.</small></div>
+          <div class="rng"><label for="cxfile">Pages of attached files</label><output id="cxfilev"></output><input type="range" id="cxfile" min="0" max="1000" value="30" step="5"><small>Assumes about 700 tokens per page.</small></div>
+          <div class="rng"><label for="cxweb">Web pages from searches</label><output id="cxwebv"></output><input type="range" id="cxweb" min="0" max="60" value="4"><small>Assumes about 3,000 tokens per page.</small></div>
+          <div class="rng"><label for="cxset">Instructions and memory</label><output id="cxsetv"></output><input type="range" id="cxset" min="0" max="5000" value="800" step="100"><small>Project instructions, preferences, and remembered details, in tokens.</small></div>
+          <div class="stack" id="cxstack" role="img" aria-label="Context window usage"></div>
+          <div class="legend"><span class="k-set">Instructions and memory</span><span class="k-msg">Messages</span><span class="k-file">Files</span><span class="k-web">Web pages</span></div>
+          <div class="result" id="cxres"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>What to do when it gets full</h3></div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>What you notice</th><th>Why it happens</th><th>Try this</th></tr></thead>
+            <tbody>
+              <tr><td>Claude loses early details in a long chat</td><td>The chat holds a lot, and long conversations can outgrow what Claude keeps in view.</td><td>Restate the key facts, or ask for a summary and continue in a new chat.</td></tr>
+              <tr><td>A very large file makes answers shallow</td><td>The file takes up much of the window.</td><td>Ask about specific sections, or split the file into parts.</td></tr>
+              <tr><td>A long answer stops partway</td><td>Replies have a length limit.</td><td>Say "continue from where you stopped", or ask for one section at a time.</td></tr>
+              <tr><td>You change topics after many messages</td><td>Old material still sits in the window and can distract.</td><td>Start a new chat for the new topic.</td></tr>
+              <tr><td>You hit usage limits sooner than expected</td><td>Longer chats and bigger files generally use more of your allowance.</td><td>Keep chats focused and attach only what the task needs.</td></tr>
+            </tbody></table></div>
+          <p class="why">How an app handles a very long conversation depends on the product, so do not count on every early detail being remembered perfectly.</p>
+        </div>
+
+        <div class="prompt"><div class="prompt-head"><span>Carry a long chat into a new one</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">Summarize the key decisions, facts, constraints, and open questions from this chat in under 300 words, so I can paste it into a new chat and continue.</p></div>
+        <div class="prompt"><div class="prompt-head"><span>Keep answers lean</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">Answer in under 100 words. Lead with the recommendation, then give the two most important reasons.</p></div>
+        <div class="pager" data-for="tokens"></div>
+      </section>
+
+      <!-- 3 EXAMPLES -->
+      <section class="lesson" id="examples" hidden>
+        <div>
+          <div class="eyebrow">Lesson 4</div>
+          <h2>Everyday examples to copy</h2>
+          <p class="lead" style="margin-top:10px">Pick a category, copy a prompt, and swap in your own details. Each one says why it works.</p>
+        </div>
+        <div class="chips" id="galchips" role="group" aria-label="Category"></div>
+        <div class="grid" id="gallery" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"></div>
+        <div class="pager" data-for="examples"></div>
+      </section>
+
+      <!-- 4 FILES -->
+      <section class="lesson" id="files" hidden>
+        <div>
+          <div class="eyebrow">Lesson 5</div>
+          <h2>Files, images, and Projects</h2>
+          <p class="lead" style="margin-top:10px">Claude works best on your real material. Attach it to a message, or keep it in a Project so every related chat starts with the same background.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><h3>What you can attach</h3><ul><li>Documents and PDFs</li><li>Spreadsheets and CSV files</li><li>Images, screenshots, and photos</li><li>Text and code files</li></ul></div>
+          <div class="card"><h3>What to ask for</h3><ul><li>Summaries and key points</li><li>Questions about specific sections</li><li>Comparisons between two files</li><li>A description or critique of an image</li></ul></div>
+          <div class="card"><h3>Good habits</h3><ul><li>Say what you want from the file</li><li>Point to pages or sections</li><li>Ask Claude to quote or cite where it found something, then check</li></ul></div>
+        </div>
+
+        <div class="prompt"><div class="prompt-head"><span>Try this with any PDF</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">Read the attached document. Give me a 5-bullet summary, then list any numbers or dates I should double-check against the original. Tell me which page each one came from.</p></div>
+        <div class="prompt"><div class="prompt-head"><span>Try this with a screenshot or photo</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">Here's a screenshot of an error message I keep seeing. Explain in plain language what it means and give me the three most likely fixes, starting with the easiest.</p></div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Projects, by example</h3><span>A Project is a workspace for one ongoing effort</span></div>
+          <p style="color:var(--muted)">A Project holds files and instructions that every chat inside it can use. You write the background once instead of repeating it. Good fits: a class, a job search, a client, a home renovation.</p>
+          <div class="mock">
+            <div class="bar"><span>Project</span><span>Spring semester: Biology 201</span></div>
+            <div class="prompt"><div class="prompt-head"><span>Project instructions</span></div><p class="prompt-text">I'm a first-year student. Explain things step by step in plain language. When I ask a practice question, wait for my answer before showing the solution. Keep answers under 200 words unless I ask for more.</p></div>
+            <div class="bar"><span>syllabus.pdf</span><span>lecture-notes-ch4.pdf</span><span>exam-1-practice.pdf</span></div>
+          </div>
+          <p class="why"><b>Why it works:</b> every new chat in this Project already knows the course, the files, and how you like to learn.</p>
+        </div>
+        <div class="pager" data-for="files"></div>
+      </section>
+
+      <!-- 5 CREATE -->
+      <section class="lesson" id="create" hidden>
+        <div>
+          <div class="eyebrow">Lesson 6</div>
+          <h2>Make things, not just answers</h2>
+          <p class="lead" style="margin-top:10px">Ask for a finished piece of work and Claude can produce it as a document, slide deck, spreadsheet, design, chart, or a small working tool. These appear beside the chat as artifacts you can keep, change, and share.</p>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>Request builder</h3><span>Pick an output, then replace the [brackets]</span></div>
+          <div class="chips" id="mkchips" role="tablist" aria-label="Output type"></div>
+          <div class="prompt"><div class="prompt-head"><span id="mkhead">Template</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="mktext"></p></div>
+          <p class="why" id="mktip"></p>
+        </div>
+        <div class="grid">
+          <div class="card"><h3>Edit by talking</h3><p>You don't have to start over. Say "make the title shorter", "add a column for deadlines", or "change the colors to something calmer".</p></div>
+          <div class="card"><h3>Ask for the format you need</h3><p>If you need a particular file type such as a Word or PowerPoint file, say so in the request. Many artifacts can also be downloaded or exported.</p></div>
+          <div class="card"><h3>Start rough</h3><p>Get a first version quickly, react to it, then refine. It's faster than describing everything up front.</p></div>
+        </div>
+        <div class="pager" data-for="create"></div>
+      </section>
+
+      <!-- 6 SEARCH -->
+      <section class="lesson" id="search" hidden>
+        <div>
+          <div class="eyebrow">Lesson 7</div>
+          <h2>Search and research</h2>
+          <p class="lead" style="margin-top:10px">Claude's built-in knowledge stops at a training cutoff. Web search lets it look things up now. Research goes further: it runs many searches and writes a longer report.</p>
+        </div>
+        <div class="grid">
+          <div class="card"><span class="tag go">Turn search on for</span><ul><li>News and recent events</li><li>Prices, versions, schedules, rules</li><li>Who currently holds a role</li><li>Anything with "latest", "current", or "still"</li></ul></div>
+          <div class="card"><span class="tag">Search isn't needed for</span><ul><li>Stable facts and definitions</li><li>Explaining a concept</li><li>Editing or brainstorming from your own text</li></ul></div>
+          <div class="card"><span class="tag warn">Research mode</span><p>Use it when you want a thorough comparison or report with sources and can wait a few minutes. Availability depends on your plan and settings.</p></div>
+        </div>
+
+        <div class="panel" id="sgame">
+          <div class="panel-title"><h3>Search or no search?</h3><span id="sscore">0 of 5</span></div>
+          <div class="quiz-q" id="sq"></div>
+          <div class="chips"><button class="btn" id="sbyes">Use search</button><button class="btn ghost" id="sbno">No search needed</button></div>
+          <div class="feedback" id="sfb" hidden></div>
+          <button class="btn ghost small" id="snext" hidden style="align-self:flex-start">Next question</button>
+        </div>
+
+        <div class="prompt"><div class="prompt-head"><span>Try this with search on</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">Compare the three most popular note-taking apps right now. Give me a table of price, platforms, and standout feature. Link each claim to its source and tell me where sources disagree.</p></div>
+        <p class="why"><b>Always check:</b> open the sources for anything you'll rely on. Ask Claude "which parts of this are you least sure about?"</p>
+        <div class="pager" data-for="search"></div>
+      </section>
+
+      <!-- 7 CUSTOMIZE -->
+      <section class="lesson" id="customize" hidden>
+        <div>
+          <div class="eyebrow">Lesson 8</div>
+          <h2>Make Claude yours</h2>
+          <p class="lead" style="margin-top:10px">Memory and preferences let Claude know your context so you repeat yourself less. Both are controlled in Settings, and what is available depends on your plan.</p>
+        </div>
+        <div class="grid">
+          <div class="card"><h3>Memory</h3><p>Claude can carry useful details from your chats into later ones, such as your role or ongoing projects. You control it in Settings, and you can ask Claude to remember or forget something.</p>
+            <div class="prompt"><p class="prompt-text" style="padding-top:12px">Remember that I prefer short answers with the recommendation first.</p></div></div>
+          <div class="card"><h3>Preferences</h3><p>Tell Claude how you like it to respond: tone, level of detail, formatting. They apply across chats.</p>
+            <div class="prompt"><p class="prompt-text" style="padding-top:12px">Explain things plainly. Skip long introductions. Use bullets only when I ask.</p></div></div>
+          <div class="card"><h3>Connectors, skills, and plugins</h3><p>These extend what Claude can reach and how it works. They have their own lessons, so this page stays short.</p>
+            <div class="chips"><button type="button" class="btn ghost small" data-goto="extend">How they fit</button><button type="button" class="btn ghost small" data-goto="connect">Connect an app</button></div></div>
+        </div>
+        <div class="callout"><b>Want a clean slate?</b><span>Use an incognito chat, or turn off memory generation in Settings, and nothing is carried over from earlier chats.</span></div>
+        <div class="pager" data-for="customize"></div>
+      </section>
+
+      <!-- 7B PLUGINS CONNECTORS MCP -->
+      <section class="lesson" id="extend" hidden>
+        <div>
+          <div class="eyebrow">Lesson 9</div>
+          <h2>Plugins, connectors, skills, and MCP</h2>
+          <p class="lead" style="margin-top:10px">Four words that show up together. Connectors give Claude access to your tools. Skills teach it how you do a task. Plugins package both into one install. MCP is the standard underneath connectors.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>How the pieces fit</h3><span>One request, read in order</span></div>
+          <div class="flow">
+            <div class="fbox">You ask<small>in chat, the desktop app, or Claude Code</small></div>
+            <span class="farrow" aria-hidden="true"></span>
+            <div class="fbox claude">Claude</div>
+            <span class="farrow" aria-hidden="true"></span>
+            <div class="fplugin"><span class="plabel">Plugin (optional): one install for both</span>
+              <div class="fbox sk">Skill<small>Your steps, format, or checklist</small></div>
+              <div class="fbox cn">Connector<small>A link to a service MCP server</small></div>
+            </div>
+            <span class="farrow" aria-hidden="true"></span>
+            <div class="fbox">Your tools and data<small>files, calendar, email, issues</small></div>
+          </div>
+          <p class="why">A skill gives Claude instructions it reads when your request needs them. A connector lets Claude read from and act in a service. A plugin is an optional wrapper that ships both, and sometimes more, in one install.</p>
+        </div>
+
+        <div class="tablewrap"><table>
+          <thead><tr><th>Piece</th><th>What it is</th><th>Use it when</th><th>Example</th></tr></thead>
+          <tbody>
+            <tr><td><b>Connector</b></td><td>A connection to a service MCP server, so Claude can read from it and act in it.</td><td>Claude needs your tools or data.</td><td>Your inbox, calendar, issue tracker, or an internal API</td></tr>
+            <tr><td><b>Skill</b></td><td>Written instructions, sometimes with scripts and reference files, that Claude loads when a task calls for them.</td><td>You want Claude to follow your process.</td><td>A release-note format, a contract checklist, a weekly report</td></tr>
+            <tr><td><b>Plugin</b></td><td>An installable package that can hold skills, connectors, commands you run by name, and agents Claude hands work to.</td><td>You want a ready-made setup, shared as one unit.</td><td>Everything for one product, or your team standard setup</td></tr>
+            <tr><td><b>MCP</b></td><td>Model Context Protocol, a standard way for AI apps to reach tools and data.</td><td>It sits under connectors, so you mostly meet it when adding a custom one.</td><td>A remote MCP server address</td></tr>
+          </tbody></table></div>
+
+        <div class="panel" id="xbox">
+          <div class="panel-title"><h3>Try it: what do you need?</h3><span>Pick the situation closest to yours</span></div>
+          <div class="opts" id="xopts"></div>
+          <div class="result" id="xresult" hidden></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Add a plugin, step by step</h3><span>Paid plans: Pro, Max, Team, Enterprise</span></div>
+          <ol class="steps">
+            <li><span><b>Open Customize</b> in the left sidebar, then the Plugins tab.</span></li>
+            <li><span><b>Open Discover</b> to browse available plugins.</span></li>
+            <li><span><b>Select a plugin and click Add.</b></span></li>
+            <li><span><b>Sign in to its connector</b> from the plugin page, if it includes one.</span></li>
+            <li><span><b>Use it.</b> Type a slash or click the + in the message box to see the skills it adds. Some plugins also add commands you run by name.</span></li>
+          </ol>
+          <p class="why">You can also add a custom plugin file or another marketplace. Source: Anthropic's help page on <a href="https://support.claude.com/en/articles/13837440-use-plugins-in-claude" target="_blank" rel="noopener">using plugins</a> and the <a href="https://claude.com/docs/extend/overview" target="_blank" rel="noopener">overview of connectors, skills, and plugins</a>.</p>
+        </div>
+
+        <details class="deeper"><summary>Go deeper: where plugins work, and rules for teams</summary><div>
+        <div class="grid">
+          <div class="card"><span class="tag">Where they work</span><h3>Saved to your account</h3><p>Plugins, skills, and connectors you add in the web app or desktop app follow you to chat on web, desktop, and mobile, and to Claude Code when you sign in with the same account. Things added from the Claude Code command line stay on that computer.</p></div>
+          <div class="card"><span class="tag">Where they work</span><h3>Chat versus longer tasks</h3><p>In chat, a plugin brings its skills, commands, and connectors. Longer task sessions in the desktop app and Claude Code also run its agents and hooks.</p></div>
+          <div class="card"><span class="tag warn">Teams</span><h3>Owners set the rules</h3><p>On Team and Enterprise plans, Owners decide what members can add and share. Admins can require certain plugins and, on Enterprise, restrict which plugins and local MCP servers are allowed.</p></div>
+        </div>
+        </div></details>
+
+        <div class="panel">
+          <div class="panel-title"><h3>MCP in plain words</h3><span>What a connector really is</span></div>
+          <p style="color:var(--muted)">A service runs an MCP server that offers a list of tools, such as search, read, or create. A connector is Claude linked to that server. You sign in with the service, and your permission settings decide which tools Claude may use. Most people never touch MCP directly. You meet it when you add a custom connector by its server address, or when a developer builds one for a team tool.</p>
+          <details class="deeper"><summary>Go deeper: example tools and suggested settings</summary><div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Example tool</th><th>Connector</th><th>What it does</th><th>Suggested setting</th></tr></thead>
+            <tbody>
+              <tr><td><code>get_message</code></td><td>Gmail</td><td>Reads one email</td><td>Always allow</td></tr>
+              <tr><td><code>create_draft</code></td><td>Gmail</td><td>Saves a draft without sending it</td><td>Needs approval</td></tr>
+              <tr><td><code>forward</code></td><td>Gmail</td><td>Sends a message on to someone else</td><td>Needs approval</td></tr>
+              <tr><td><code>delete_label</code></td><td>Gmail</td><td>Removes a label</td><td>Blocked, if you never want it</td></tr>
+              <tr><td><code>slack_read_thread</code></td><td>Slack</td><td>Reads a thread</td><td>Always allow</td></tr>
+              <tr><td><code>slack_create_canvas</code></td><td>Slack</td><td>Creates a canvas document</td><td>Needs approval</td></tr>
+              <tr><td><code>slack_send_message</code></td><td>Slack</td><td>Posts a message others can see</td><td>Needs approval</td></tr>
+            </tbody></table></div>
+          <p class="why">Names vary by connector and can change over time. The suggested settings are a cautious starting point, not a rule.</p>
+          </div></details>
+        </div>
+
+        <div class="callout"><b>Trust before you connect</b><span>A connector can read and act in a service on your behalf. Prefer Verified listings, add custom servers only from sources you trust, and keep anything that sends, posts, or deletes on Needs approval.</span></div>
+        <div class="pager" data-for="extend"></div>
+      </section>
+
+      <!-- 8 CONNECT YOUR APPS -->
+      <section class="lesson" id="connect" hidden>
+        <div>
+          <div class="eyebrow">Lesson 10</div>
+          <h2>Connect Gmail, GitHub, Slack, and more</h2>
+          <p class="lead" style="margin-top:10px">Connectors let Claude read from the apps where your work lives and, with your approval, act in them. Instead of pasting an email thread into the chat, you connect Gmail once and ask for a summary of the thread about the venue contract.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Add a connector, step by step</h3><span>Same flow for most services</span></div>
+          <ol class="steps">
+            <li><span><b>Open Customize, then Connectors.</b> In the desktop app, choose Customize in the sidebar. Menu names can change, so search the help center if yours looks different.</span></li>
+            <li><span><b>Find the service.</b> Browse the directory or search by name, such as Gmail, GitHub, or Slack. Check whether a listing is marked Verified or Community.</span></li>
+            <li><span><b>Click to connect.</b> Some services first ask for a server address or your account region. On Team or Enterprise plans, an Owner may need to add the connector for your organization first.</span></li>
+            <li><span><b>Sign in and approve.</b> You log in on the service's own page and approve the access it lists. Claude never sees your password.</span></li>
+            <li><span><b>Check the status.</b> The connector should show as Connected.</span></li>
+            <li><span><b>Turn it on in a chat.</b> Click the + in the message box, choose Connectors, and switch it on for this conversation. Then ask for something that needs the app.</span></li>
+            <li><span><b>Set permissions.</b> On the connector's page, set each group of tools to Always allow, Needs approval, or Blocked.</span></li>
+          </ol>
+          <p class="why">Source: Anthropic's help pages on <a href="https://www.claude.com/docs/connectors/getting-started" target="_blank" rel="noopener">getting started with connectors</a> and <a href="https://support.claude.com/en/articles/11175166-getting-started-with-custom-connectors-using-remote-mcp" target="_blank" rel="noopener">custom connectors</a>.</p>
+        </div>
+
+        <div class="panel" id="svbox">
+          <div class="panel-title"><h3>Try it: pick a service</h3><span>See what it unlocks and what to ask</span></div>
+          <div class="chips" id="svchips" role="group" aria-label="Service"></div>
+          <div id="svdetail" style="display:flex;flex-direction:column;gap:14px;min-width:0"></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Combine apps in one request</h3><span>Once two are connected</span></div>
+          <div class="prompt"><div class="prompt-head"><span>Morning prep</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">Check my calendar for tomorrow. For each meeting, find the most recent related email thread and give me a two-line summary and one question I should be ready to answer.</p></div>
+          <div class="prompt"><div class="prompt-head"><span>Engineering digest</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">List the pull requests merged this week, then search the #engineering channel for related discussion. Write a short digest grouped by theme. Show it to me before posting anything.</p></div>
+          <div class="prompt"><div class="prompt-head"><span>Meeting follow-up</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text">Find the planning doc from last week's meeting, pull out the action items with owners, and draft a follow-up email to the attendees. Save it as a draft and do not send it.</p></div>
+        </div>
+
+        <p class="why"><b>Rule of thumb:</b> let reading run, keep anything that sends, posts, or changes on Needs approval, and block what you never want. Lesson 9 has a table of example tools with suggested settings.</p>
+
+        <div class="callout"><b>Treat what Claude reads as data</b><span>An email, web page, or document can contain text that tries to give Claude orders. If Claude points out an instruction inside such content, or asks to do something you did not request, decline.</span></div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>When something goes wrong</h3></div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Problem</th><th>What to try</th></tr></thead>
+            <tbody>
+              <tr><td>Can't find the service</td><td>Search by name. On a work plan, ask your Owner to add it. If the tool offers a connection address (called a remote MCP server), you can add it as a custom connector.</td></tr>
+              <tr><td>Connected, but Claude doesn't use it</td><td>Open the + menu in the chat, choose Connectors, and switch it on for this conversation.</td></tr>
+              <tr><td>It shows Reconnect</td><td>Access lapsed. Click Reconnect and sign in again.</td></tr>
+              <tr><td>You want Claude to stop using it</td><td>Turning off the chat toggle only pauses it. Use Disconnect to revoke access, or Remove to delete the connector.</td></tr>
+              <tr><td>Claude keeps asking for approval</td><td>Set that group of tools to Always allow if it only reads. Keep sending and changing tools on Needs approval.</td></tr>
+            </tbody></table></div>
+          <p class="why">Custom connectors are in beta and work with servers you enter by address. Only add servers you trust, and review which tools you allow.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Connect your first app</h3><span>Ticks save on this device</span></div>
+          <ul class="check" id="conncheck"></ul>
+        </div>
+        <div class="pager" data-for="connect"></div>
+      </section>
+
+      <!-- 9 ORGANIZE AND AUTOMATE -->
+      <section class="lesson" id="organize" hidden>
+        <div>
+          <div class="eyebrow">Lesson 11</div>
+          <h2>Organize files and automate tasks</h2>
+          <p class="lead" style="margin-top:10px">With the Claude desktop app, Claude can work on folders on your computer: sort and rename files, build an index, write a report. It can also repeat a job for you on a schedule. What is available depends on your plan and settings.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>How a folder job runs</h3><span>You decide what Claude can reach</span></div>
+          <ol class="steps">
+            <li><span><b>Open the chat in the desktop app</b> on the computer that has the files.</span></li>
+            <li><span><b>Connect a folder.</b> Claude can only see the folders you choose.</span></li>
+            <li><span><b>Ask for a plan first.</b> Have Claude list what it would change before it changes anything.</span></li>
+            <li><span><b>Approve, then let it work.</b> Look over the result when it finishes.</span></li>
+          </ol>
+        </div>
+
+        <div class="grid">
+          <div class="card"><span class="tag go">Built-in care</span><h3>New files first</h3><p>Claude saves results next to your originals and changes an existing file only when you ask it to.</p></div>
+          <div class="card"><span class="tag go">Built-in care</span><h3>Deleting needs your OK</h3><p>Claude asks before it deletes anything. If you would rather not allow that, it moves files into a <code>_to_delete</code> folder for you to review and empty yourself.</p></div>
+          <div class="card"><span class="tag warn">Good to know</span><h3>Your computer must be reachable</h3><p>If the computer is asleep, offline, or the app is closed, Claude can't reach the folder. You can attach files to the chat instead.</p></div>
+        </div>
+
+        <div class="panel" id="foldersbox">
+          <div class="panel-title"><h3>Try it: plan a folder cleanup</h3><span>Pick a messy folder to see before and after</span></div>
+          <div class="chips" id="fochips" role="group" aria-label="Folder type"></div>
+          <div class="pair">
+            <div style="min-width:0"><div class="tree-label">Before</div><pre class="tree" id="fobefore" tabindex="0"></pre></div>
+            <div style="min-width:0"><div class="tree-label">After</div><pre class="tree" id="foafter" tabindex="0"></pre></div>
+          </div>
+          <div class="prompt"><div class="prompt-head"><span>Prompt</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="foprompt"></p></div>
+          <p class="why" id="fowhy"></p>
+        </div>
+
+        <div class="panel" id="schedbox">
+          <div class="panel-title"><h3>Automate with scheduled tasks</h3><span>Set it up once, Claude repeats it</span></div>
+          <p style="color:var(--muted)">A scheduled task runs later or on a repeat, even when you are away. Each run starts fresh and does not remember this chat, so the instructions must be complete on their own.</p>
+          <div class="sched">
+            <label for="schfreq">How often<select id="schfreq"></select></label>
+            <label for="schtime">What time<input type="time" id="schtime" value="08:30"></label>
+            <label for="schtask">What to do<select id="schtask"></select></label>
+          </div>
+          <div class="prompt"><div class="prompt-head"><span>Ask Claude to set it up</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="schout"></p></div>
+          <p class="why">A run may pause if it needs your approval for an action, depending on how the task is set up. Start with tasks that only read files and write new ones.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><h3>Good first automations</h3><ul><li>A Monday summary of files added to a project folder</li><li>A monthly sort of receipts into year folders</li><li>A weekly Downloads cleanup that only proposes changes</li><li>A weekday morning plan from your calendar, if you have connected it</li></ul></div>
+          <div class="card"><h3>Beyond folders</h3><p>With your permission, Claude can also work in apps on your computer and in your browser, such as filling in a form or collecting information across several sites. Ask it to confirm before anything is submitted.</p></div>
+        </div>
+        <div class="callout"><b>Before you start</b><span>Keep a backup of any folder you care about. Begin with a practice run ("don't change anything yet, just show me the plan"), and check the result on a small folder before pointing Claude at a big one.</span></div>
+        <div class="pager" data-for="organize"></div>
+      </section>
+
+      <!-- 9 EVERYWHERE -->
+      <section class="lesson" id="everywhere" hidden>
+        <div>
+          <div class="eyebrow">Lesson 12</div>
+          <h2>Where Claude lives</h2>
+          <p class="lead" style="margin-top:10px">The main Claude app runs on web, desktop, and mobile. There are also tools for coding, browsing, and team work. Choose what you're trying to do and see which fits.</p>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>Which one is for me?</h3><span>Pick a goal</span></div>
+          <div class="opts" id="mgoals"></div>
+          <details class="deeper"><summary>For developers and specialists</summary><div><div class="opts" id="mgoals2"></div></div></details>
+          <div class="result" id="mresult" hidden></div>
+        </div>
+        <div class="pager" data-for="everywhere"></div>
+      </section>
+
+      <!-- 9 HABITS -->
+      <section class="lesson" id="habits" hidden>
+        <div>
+          <div class="eyebrow">Lesson 13</div>
+          <h2>Using Claude well</h2>
+          <p class="lead" style="margin-top:10px">A few habits separate people who get steady value from people who get stuck.</p>
+        </div>
+        <div class="tablewrap"><table>
+          <thead><tr><th>If this happens</th><th>Try this</th></tr></thead>
+          <tbody>
+            <tr><td>The answer is generic</td><td>Add context, audience, and a format. Use the Prompt Lab pieces from lesson 2.</td></tr>
+            <tr><td>The answer is too long</td><td>Set a length: "under 100 words" or "3 bullets".</td></tr>
+            <tr><td>Claude misunderstood you</td><td>Say what was wrong, then restate the goal. Or ask "what did you assume?"</td></tr>
+            <tr><td>You doubt a fact</td><td>Ask for sources, turn on search, and check the original.</td></tr>
+            <tr><td>A long chat gets muddled, or you change topics</td><td>Summarize and start a new chat. Lesson 3 explains why.</td></tr>
+          </tbody></table></div>
+        <div class="grid">
+          <div class="card"><h3>Verify what matters</h3><p>Claude can be confidently wrong. Check figures, quotes, and citations before you use them, and get professional advice for legal, medical, and financial decisions.</p></div>
+          <div class="card"><h3>Protect sensitive data</h3><p>Don't paste passwords, payment details, or private information about other people unless you have a good reason and the right to share it.</p></div>
+          <div class="card"><h3>Give feedback</h3><p>The thumbs up and thumbs down buttons on a response tell Anthropic what worked and what didn't.</p></div>
+        </div>
+        <p class="why">Help articles live at <a href="https://support.claude.com" target="_blank" rel="noopener">support.claude.com</a>, and developers can start at <a href="https://docs.claude.com" target="_blank" rel="noopener">docs.claude.com</a>.</p>
+        <div class="pager" data-for="habits"></div>
+      </section>
+
+      <!-- 10 QUIZ -->
+      <section class="lesson" id="quiz" hidden>
+        <div>
+          <div class="eyebrow">Lesson 14</div>
+          <h2>Check yourself</h2>
+          <p class="lead" style="margin-top:10px">Seventeen questions. You get an explanation after each answer.</p>
+        </div>
+        <div class="panel" id="quizbox"></div>
+        <div class="pager" data-for="quiz"></div>
+      </section>
+
+      <!-- FEATURE GUIDE -->
+      <section class="lesson" id="features" hidden>
+        <div>
+          <div class="eyebrow">Reference</div>
+          <h2>Feature guide</h2>
+          <p class="lead" style="margin-top:10px">What Claude can do, what each feature is for, and a prompt to try. Some features depend on your plan, your settings, or which app you use.</p>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div class="search"><label class="why" for="fsearch">Search features</label><input id="fsearch" type="search" placeholder="Try: email, schedule, charts"></div>
+          <div class="chips" id="fviews" role="group" aria-label="View"></div>
+          <div class="chips" id="fchips" role="group" aria-label="Category"></div>
+          <p class="why" id="fcount"></p>
+        </div>
+        <div class="grid" id="fgrid" style="grid-template-columns:repeat(auto-fit,minmax(300px,1fr))"></div>
+        <div id="ftablewrap" hidden style="display:flex;flex-direction:column;gap:10px">
+          <div><button type="button" class="btn ghost small" id="fcopy">Copy table</button></div>
+          <div class="tablewrap"><table id="ftable" style="min-width:1040px">
+            <thead><tr><th>#</th><th>Feature</th><th>Category</th><th>What it is</th><th>Use it for</th><th>Try saying</th><th>Where to find it</th></tr></thead>
+            <tbody></tbody></table></div>
+        </div>
+        <div class="map" id="fmap" hidden></div>
+      </section>
+
+      <!-- GLOSSARY -->
+      <section class="lesson" id="glossary" hidden>
+        <div>
+          <div class="eyebrow">Reference</div>
+          <h2>Glossary</h2>
+          <p class="lead" style="margin-top:10px">Plain definitions for terms you'll run into.</p>
+        </div>
+        <div class="search"><label for="gsearch" class="why">Filter terms</label><input id="gsearch" type="search" placeholder="Try: memory, token, artifact"></div>
+        <dl id="gl"></dl>
+      </section>
+
+    </main>
+  </div>
+</div>
+
+<script>
+(function(){
+  var $=function(s,r){return (r||document).querySelector(s)};
+  var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+  var store={
+    get:function(k,d){try{var v=localStorage.getItem('clg:'+k);return v==null?d:JSON.parse(v)}catch(e){return d}},
+    set:function(k,v){try{localStorage.setItem('clg:'+k,JSON.stringify(v))}catch(e){}}
+  };
+  function el(tag,attrs,text){var n=document.createElement(tag);if(attrs)for(var k in attrs){if(k==='class')n.className=attrs[k];else n.setAttribute(k,attrs[k])}if(text!=null)n.textContent=text;return n}
+
+  /* ---------- lessons & nav ---------- */
+  var MODULES=[
+    ['start','Start here','Get comfortable with the basics.'],
+    ['work','Everyday work','Use Claude for real tasks.'],
+    ['extend','Extend Claude','Connect your tools and automate.'],
+    ['further','Go further','Where to use it, good habits, and a quiz.']
+  ];
+  var LESSONS=[
+    ['meet','Meet Claude','5 min','start','What Claude is, which model to pick, and your first five minutes.'],
+    ['prompting','Prompts that work','8 min','start','Get better answers with context, audience, and format.'],
+    ['tokens','Tokens and context','6 min','start','How Claude reads text, and what happens when a chat gets long.'],
+    ['examples','Everyday examples','6 min','work','Copyable prompts for writing, learning, work, code, and life.'],
+    ['files','Files and Projects','5 min','work','Attach files and keep related chats together in Projects.'],
+    ['create','Make things','5 min','work','Ask for documents, decks, spreadsheets, charts, and small tools.'],
+    ['search','Search and research','5 min','work','When to use web search and Research for current information.'],
+    ['customize','Make Claude yours','4 min','extend','Memory and preferences, so you repeat yourself less.'],
+    ['extend','Plugins, connectors, MCP','8 min','extend','How plugins, connectors, skills, and MCP fit together.'],
+    ['connect','Connect your apps','7 min','extend','Connect Gmail, GitHub, Slack, and Drive, step by step.'],
+    ['organize','Organize and automate','7 min','extend','Clean up folders on your computer and schedule repeat jobs.'],
+    ['everywhere','Where Claude lives','3 min','further','Which Claude product fits what you are trying to do.'],
+    ['habits','Using it well','4 min','further','Fixes for common problems, plus verifying and protecting data.'],
+    ['quiz','Check yourself','5 min','further','Test what you learned, with an explanation after each answer.']
+  ];
+  function modName(id){return MODULES.filter(function(m){return m[0]===id})[0][1]}
+  var done=new Set(store.get('done',[]));
+  var current='meet';
+  var rail=$('#rail');
+  function buildRail(){
+    rail.innerHTML='';
+    var ov=el('button',{type:'button','data-id':'overview'});
+    ov.appendChild(el('span',{class:'t'},'Overview'));
+    ov.addEventListener('click',function(){show('overview')});
+    if(current==='overview')ov.setAttribute('aria-current','page');
+    rail.appendChild(ov);
+    MODULES.forEach(function(m){
+      rail.appendChild(el('div',{class:'rail-label'},m[1]));
+      LESSONS.forEach(function(l,i){
+        if(l[3]!==m[0])return;
+        var b=el('button',{type:'button','data-id':l[0]});
+        var d=el('span',{class:'dot'+(done.has(l[0])?' done':'')},done.has(l[0])?'✓':'');
+        b.appendChild(d);b.appendChild(el('span',{class:'t'},(i+1)+'. '+l[1]));b.appendChild(el('span',{class:'m'},l[2]));
+        b.addEventListener('click',function(){show(l[0])});
+        if(l[0]===current)b.setAttribute('aria-current','page');
+        rail.appendChild(b);
+      });
+    });
+    rail.appendChild(el('div',{class:'rail-label'},'Reference'));
+    [['features','Feature guide'],['glossary','Glossary']].forEach(function(r){
+      var g=el('button',{type:'button','data-id':r[0]});
+      g.appendChild(el('span',{class:'t'},r[1]));
+      g.addEventListener('click',function(){show(r[0])});
+      if(current===r[0])g.setAttribute('aria-current','page');
+      rail.appendChild(g);
+    });
+  }
+  function buildOverview(){
+    var nx=$('#ovnext');nx.innerHTML='';
+    var open=LESSONS.filter(function(l){return !done.has(l[0])})[0];
+    var box=el('div');
+    if(!open){
+      box.appendChild(el('h3',null,'You finished all '+LESSONS.length+' lessons'));
+      box.appendChild(el('p',{class:'why'},'Keep the Feature guide handy, or retake the quiz any time.'));
+      nx.appendChild(box);
+      var q=el('button',{type:'button',class:'btn'},'Retake the quiz');q.addEventListener('click',function(){show('quiz')});nx.appendChild(q);
+    }else{
+      var idx=LESSONS.indexOf(open)+1;
+      box.appendChild(el('h3',null,done.size?('Pick up at lesson '+idx+': '+open[1]):('Start with lesson 1: '+open[1])));
+      box.appendChild(el('p',{class:'why'},done.size+' of '+LESSONS.length+' done. '+open[4]));
+      nx.appendChild(box);
+      var go=el('button',{type:'button',class:'btn'},done.size?'Continue':'Start lesson 1');
+      go.addEventListener('click',function(){show(open[0])});nx.appendChild(go);
+    }
+    var wrap=$('#ovmods');wrap.innerHTML='';
+    MODULES.forEach(function(m){
+      var items=LESSONS.filter(function(l){return l[3]===m[0]});
+      var n=items.filter(function(l){return done.has(l[0])}).length;
+      var mod=el('div',{class:'mod mod-'+m[0]});
+      var h=el('div',{class:'mod-head'});h.appendChild(el('h3',null,m[1]));h.appendChild(el('span',{class:'mod-count'},n+' of '+items.length));
+      mod.appendChild(h);mod.appendChild(el('p',{class:'mod-blurb'},m[2]));
+      items.forEach(function(l){
+        var i=LESSONS.indexOf(l);
+        var r=el('button',{type:'button',class:'lrow'});
+        r.appendChild(el('span',{class:'dot'+(done.has(l[0])?' done':'')},done.has(l[0])?'✓':''));
+        var t=el('span');t.appendChild(el('b',null,(i+1)+'. '+l[1]));t.appendChild(el('small',null,l[4]));
+        r.appendChild(t);r.appendChild(el('span',{class:'tm'},l[2]));
+        r.addEventListener('click',function(){show(l[0])});
+        mod.appendChild(r);
+      });
+      wrap.appendChild(mod);
+    });
+  }
+  function updateProgress(){
+    var n=done.size;
+    $('#meterfill').style.width=(n/LESSONS.length*100)+'%';
+    $('#meterbox').setAttribute('aria-valuenow',n);
+    $('#proglabel').textContent=n+' of '+LESSONS.length+' done';
+  }
+  function setDone(id,on){
+    if(on)done.add(id);else done.delete(id);
+    store.set('done',Array.from(done));
+    buildRail();updateProgress();buildPagers();buildOverview();
+  }
+  function show(id){
+    var ids=LESSONS.map(function(l){return l[0]}).concat(['overview','features','glossary']);
+    if(ids.indexOf(id)<0)id='overview';
+    current=id;
+    $$('.lesson').forEach(function(s){s.hidden=s.id!==id});
+    buildRail();buildOverview();hidePop();
+    store.set('last',id);
+    try{if(location.hash!=='#'+id)location.hash=id}catch(e){}
+    window.scrollTo(0,0);
+  }
+  function buildPagers(){
+    $$('.pager').forEach(function(p){
+      var id=p.getAttribute('data-for');
+      var i=LESSONS.map(function(l){return l[0]}).indexOf(id);
+      p.innerHTML='';
+      var prev=el('button',{type:'button',class:'btn ghost'},i<=0?'← Overview':'← Previous');
+      if(i<=0)prev.addEventListener('click',function(){show('overview')});else prev.addEventListener('click',function(){show(LESSONS[i-1][0])});
+      var mid=el('div',{class:'mid'});
+      var isDone=done.has(id);
+      var mark=el('button',{type:'button',class:'btn'+(isDone?' ghost':'')},isDone?'Completed ✓':'Mark complete');
+      mark.addEventListener('click',function(){setDone(id,!done.has(id))});
+      mid.appendChild(mark);
+      var next=el('button',{type:'button',class:'btn ghost'},'Next →');
+      if(i>=LESSONS.length-1){next.textContent='Overview';next.addEventListener('click',function(){show('overview')})}else next.addEventListener('click',function(){show(LESSONS[i+1][0])});
+      p.appendChild(prev);p.appendChild(mid);p.appendChild(next);
+    });
+  }
+
+  /* ---------- copy ---------- */
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('.copy');
+    if(!b)return;
+    var box=b.closest('.prompt');var t=box.querySelector('.prompt-text');
+    var text=t.innerText||t.textContent;
+    var old='Copy';
+    function ok(){b.textContent='Copied';setTimeout(function(){b.textContent=old},1400)}
+    function fallback(){
+      var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';
+      document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove();ok();
+    }
+    try{navigator.clipboard.writeText(text).then(ok,fallback)}catch(err){fallback()}
+  });
+
+  /* ---------- model picker ---------- */
+  var PICKS=[
+    ['Quick lookups, rewrites, or lots of small tasks','Haiku','Fast and light. Good when you want an answer sooner and the task is simple, like fixing a sentence or summarizing a short note.'],
+    ['Everyday work: writing, analysis, documents, or code','Sonnet','The everyday model. A strong default for most of what you'+"'"+'ll ask, with a good balance of speed and quality.'],
+    ['A hard problem with many steps, or a long project','Opus','More depth for complex reasoning and longer work. Worth switching to when Sonnet'+"'"+'s answer feels shallow.'],
+    ['The hardest, highest-stakes thing I have','Fable','The most capable tier. It includes extra safeguards in some sensitive areas, so a few requests may be handled more carefully.']
+  ];
+  (function(){
+    var box=$('#pickopts'),res=$('#pickresult');
+    PICKS.forEach(function(p){
+      var b=el('button',{type:'button',class:'opt','aria-pressed':'false'},p[0]);
+      b.addEventListener('click',function(){
+        $$('.opt',box).forEach(function(o){o.setAttribute('aria-pressed','false')});
+        b.setAttribute('aria-pressed','true');
+        res.hidden=false;res.innerHTML='';
+        res.appendChild(el('h3',null,'Try '+p[1]));res.appendChild(el('p',null,p[2]));
+        res.appendChild(el('p',{class:'why'},'Not sure? Start with Sonnet. You can switch models mid-chat and compare.'));
+      });
+      box.appendChild(b);
+    });
+  })();
+
+  /* ---------- first five minutes ---------- */
+  (function(){
+    var items=['Say hello and ask something you already know the answer to, to see how Claude responds','Attach a file and ask for a 3-bullet summary','Ask Claude to rewrite a paragraph in a different tone','Start a new chat for a new topic','Open Settings and look at the options for memory and web search'];
+    var saved=store.get('first',[]);var ul=$('#firstcheck');
+    items.forEach(function(t,i){
+      var li=el('li');var lb=el('label');
+      var cb=el('input',{type:'checkbox',id:'fc'+i});cb.checked=saved.indexOf(i)>=0;
+      cb.addEventListener('change',function(){
+        var s=store.get('first',[]);var k=s.indexOf(i);
+        if(cb.checked&&k<0)s.push(i);if(!cb.checked&&k>=0)s.splice(k,1);store.set('first',s);
+      });
+      lb.appendChild(cb);lb.appendChild(el('span',null,t));li.appendChild(lb);ul.appendChild(li);
+    });
+  })();
+
+  /* ---------- Prompt Lab ---------- */
+  var LAB=[
+    {name:'Email to a landlord',base:'Write an email to my landlord about a broken heater.',
+      parts:[['Context','The heater stopped working 5 days ago and I called once already. Nights are below freezing.'],['Audience','The landlord is busy and responds best to short, polite messages.'],['Format','Subject line, then three short paragraphs.'],['Length','Under 150 words.'],['Tone','Firm but friendly. Ask for a repair within 48 hours.']]},
+    {name:'Study plan',base:'Make me a study plan for my biology exam.',
+      parts:[['Context','The exam is in 10 days and covers chapters 4 to 7. I understand chapter 4 but struggle with 6.'],['Audience','I'+"'"+'m a first-year student who gets bored reading for a long time.'],['Format','A day-by-day table with a topic and an activity for each day.'],['Length','45 minutes per day, with one rest day.'],['Tone','Encouraging and practical. Include a few recall questions per day.']]},
+    {name:'Explain a concept',base:'Explain how a mortgage works.',
+      parts:[['Context','I'+"'"+'m thinking about buying a first home in a few years and I don'+"'"+'t know any of the terms.'],['Audience','Explain it to someone with no finance background.'],['Format','Short sections with a plain-language definition and a small numeric example.'],['Length','About 300 words.'],['Tone','Calm and clear. End with 3 questions I should ask a lender.']]}
+  ];
+  var LABREPLY=[
+    ['Subject: Heater\n\nHello,\n\nMy heater is broken. Please fix it as soon as you can.\n\nThanks',
+     'Subject: Broken heater, repair needed\n\nHi,\n\nThe heater stopped working five days ago, and I called once already. Nights are below freezing. Could you arrange a repair soon?\n\nThank you.',
+     'Subject: Heater repair needed within 48 hours\n\nHi [Landlord],\n\nThe heater in my unit stopped working 5 days ago. I called once already, and nights are now below freezing.\n\nCould you arrange a repair within 48 hours? If a technician needs access, I can be home any evening this week.\n\nThanks for your help,\n[Your name]'],
+    ['Study chapters 4 to 7 before your exam. Read your notes and practice problems each day.',
+     'You have 10 days. Spend the first days on chapter 6, since it is the hardest, then review chapters 4, 5, and 7. Do some practice questions each day.',
+     'Day 1: Chapter 6, read and highlight (45 min)\nDay 2: Chapter 6, 5 recall questions, then fix the gaps\nDay 3: Chapter 4 refresher + 5 recall questions\nDay 4: Chapter 5 + 5 recall questions\nDay 5: Chapter 7 + 5 recall questions\nDay 6: Rest day\nDays 7 to 9: Mixed practice on chapters 4 to 7, starting with chapter 6\nDay 10: Light review, then sleep well'],
+    ['A mortgage is a loan used to buy a home. You pay it back over time with interest.',
+     'A mortgage is a loan for a home. You borrow money, then repay it each month with interest. The house secures the loan, so the lender can take it if you stop paying.',
+     'A mortgage, in plain words\n\nWhat it is: a loan to buy a home. You repay it monthly, and part of each payment is interest.\n\nExample: borrow $200,000 over 30 years at 6%, and you would pay about $1,200 a month before taxes and insurance.\n\nThree questions to ask a lender:\n1. What is the interest rate, and can it change?\n2. What fees will I pay up front?\n3. How much do I need for a down payment?']
+  ];
+  var labState={p:0,on:[true,false,false,false,false]};
+  var labVals=[];
+  function labRender(){
+    var p=LAB[labState.p];
+    $$('#labpresets .chip').forEach(function(c,i){c.setAttribute('aria-pressed',i===labState.p?'true':'false')});
+    var f=$('#labfields');f.innerHTML='';
+    var baseWrap=el('div',{class:'row'});
+    baseWrap.appendChild(el('span'));
+    baseWrap.firstChild.style.width='20px';
+    var bl=el('label',{class:'name','for':'labbase'},'Your request');
+    var ta=el('textarea',{id:'labbase'});ta.value=labVals.base!=null?labVals.base:p.base;
+    ta.addEventListener('input',function(){labVals.base=ta.value;labOut()});
+    baseWrap.appendChild(bl);baseWrap.appendChild(ta);f.appendChild(baseWrap);
+    p.parts.forEach(function(pt,i){
+      var r=el('div',{class:'row'});
+      var cb=el('input',{type:'checkbox',id:'labc'+i});cb.checked=labState.on[i];
+      var lb=el('label',{class:'name','for':'labc'+i},pt[0]);
+      var inp=el('input',{type:'text',id:'labt'+i,'aria-label':pt[0]+' text'});
+      inp.value=(labVals['p'+labState.p+'_'+i]!=null)?labVals['p'+labState.p+'_'+i]:pt[1];
+      cb.addEventListener('change',function(){labState.on[i]=cb.checked;labOut()});
+      inp.addEventListener('input',function(){labVals['p'+labState.p+'_'+i]=inp.value;if(!cb.checked){cb.checked=true;labState.on[i]=true}labOut()});
+      r.appendChild(cb);r.appendChild(lb);r.appendChild(inp);f.appendChild(r);
+    });
+    labOut();
+  }
+  function labOut(){
+    var p=LAB[labState.p];
+    var base=(labVals.base!=null?labVals.base:p.base).trim();
+    var lines=[base];var n=0,missing=[];
+    p.parts.forEach(function(pt,i){
+      var v=(labVals['p'+labState.p+'_'+i]!=null)?labVals['p'+labState.p+'_'+i]:pt[1];
+      if(labState.on[i]&&v.trim()){lines.push(pt[0]+': '+v.trim());n++}else{missing.push(pt[0].toLowerCase())}
+    });
+    $('#labout').textContent=lines.join('\n');
+    var bars=$('#labbars');bars.innerHTML='';
+    for(var i=0;i<5;i++){bars.appendChild(el('i',{class:i<n?'on':''}))}
+    $('#lablabel').textContent=n===0?'Vague':n<3?'Getting there':n<5?'Solid':'Very specific';
+    var g=$('#labguess');
+    g.innerHTML='';
+    if(missing.length){g.appendChild(document.createTextNode('Claude has to guess: '));var b=el('b',null,missing.join(', '));g.appendChild(b);g.appendChild(document.createTextNode('. It will fill the gaps with typical choices.'))}
+    else g.textContent='Nothing left to guess. Claude has what it needs.';
+    var tier=n<=1?0:n<=3?1:2;
+    $('#labreply').textContent=LABREPLY[labState.p][tier];
+    $('#labtier').textContent='('+['generic','better','tailored'][tier]+')';
+  }
+  (function(){
+    var c=$('#labpresets');
+    LAB.forEach(function(p,i){
+      var b=el('button',{type:'button',class:'chip','aria-pressed':i===0?'true':'false'},p.name);
+      b.addEventListener('click',function(){labState.p=i;labState.on=[true,false,false,false,false];labVals={};labRender()});
+      c.appendChild(b);
+    });
+    labRender();
+  })();
+
+  /* ---------- tokens and context ---------- */
+  (function(){
+    var ta=$('#tkin');
+    function fmt(n){return Math.round(n).toLocaleString('en-US')}
+    function upd(){
+      var t=ta.value,chars=t.length,words=(t.trim().match(/\S+/g)||[]).length;
+      var est=Math.ceil(chars/4);
+      $('#tkchars').textContent=fmt(chars);$('#tkwords').textContent=fmt(words);
+      $('#tkest').textContent=fmt(est);
+      $('#tkrange').textContent='tokens, roughly '+fmt(est*0.8)+' to '+fmt(est*1.3);
+      $('#tkpages').textContent=(words/500).toFixed(words<500?2:1);
+    }
+    ta.addEventListener('input',upd);upd();
+
+    var win=$('#cxwin'),msg=$('#cxmsg'),file=$('#cxfile'),web=$('#cxweb'),set=$('#cxset');
+    function calc(){
+      var W=+win.value;
+      var parts=[['k-set',+set.value],['k-msg',msg.value*250],['k-file',file.value*700],['k-web',web.value*3000]];
+      var total=parts.reduce(function(a,p){return a+p[1]},0);
+      $('#cxmsgv').textContent=msg.value+' messages';
+      $('#cxfilev').textContent=file.value+' pages';
+      $('#cxwebv').textContent=web.value+' pages';
+      $('#cxsetv').textContent=fmt(+set.value)+' tokens';
+      var st=$('#cxstack');st.innerHTML='';
+      var scale=Math.max(W,total);
+      parts.forEach(function(p){var i=el('i',{class:p[0]});i.style.width=(p[1]/scale*100)+'%';st.appendChild(i)});
+      var pct=total/W*100;
+      var res=$('#cxres');res.innerHTML='';
+      res.appendChild(el('h3',null,fmt(total)+' of '+fmt(W)+' tokens ('+Math.round(pct)+'%)'));
+      var m=pct<50?'Plenty of room. Claude can keep all of this in view.':pct<80?'Getting full. Consider summarizing or trimming what you attach.':pct<=100?'Nearly full. Start a new chat with a short summary.':'Over the window. Something has to be dropped or condensed, and Claude may lose details.';
+      res.appendChild(el('p',null,m));
+    }
+    [win,msg,file,web,set].forEach(function(n){n.addEventListener('input',calc)});
+    calc();
+  })();
+
+  /* ---------- gallery ---------- */
+  var GAL=[
+    ['Write','Firm, friendly email','Draft a polite but firm email to my landlord. The heater has been broken for 5 days and I want it fixed within 48 hours. Keep it under 150 words and mention that I already called once.','It states the goal, a deadline, a length limit, and what already happened.'],
+    ['Write','Rewrite and show changes','Rewrite the paragraph below so it sounds confident but friendly. Keep my meaning, cut it by a third, and list what you changed.\n<text>\n...paste your paragraph...\n</text>','Tags separate your text from your instructions, and asking for a change list lets you learn from the edit.'],
+    ['Write','Cover letter with honesty','Here is a job posting and my resume. Point out my three strongest matches and two gaps, then draft a 250-word cover letter that addresses the gaps honestly.','It asks for analysis before writing, so the letter is built on a real comparison.'],
+    ['Learn','Explain, then quiz me','Explain how interest rates affect mortgage payments as if I'+"'"+'m 15. Then give me a 3-question quiz to check I understood, and wait for my answers.','Explaining plus testing turns reading into learning.'],
+    ['Learn','Study plan with limits','I have a biology exam in 10 days covering chapters 4 to 7. Build a daily plan with 45 minutes a day, mixing reading and recall practice.','Dates, scope, and a time limit make the plan something you can actually follow.'],
+    ['Learn','One question at a time','Teach me the basics of SQL by asking me one question at a time. Start easy and adjust to my answers.','It sets up a back-and-forth tutor instead of a lecture.'],
+    ['Work','Meeting notes to actions','Turn the transcript below into decisions, owners, and open questions. Put action items in a table with a due date column.\n<transcript>\n...paste here...\n</transcript>','A clear output structure saves you from reformatting later.'],
+    ['Work','Spot trends, then doubt them','Here is a spreadsheet of monthly sales. List three trends that stand out and one thing I should check before trusting each.','Asking for checks keeps you from trusting a pattern that may be noise.'],
+    ['Work','Notes to a project brief','Turn these rough notes into a one-page project brief with goals, scope, risks, and next steps. Flag anything that looks missing.','Section names give the brief its shape, and asking Claude to flag what is missing surfaces gaps.'],
+    ['Code','Explain, then find bugs','Explain what this function does line by line, then point out any bugs or edge cases I haven'+"'"+'t handled.\n<code>\n...paste code...\n</code>','Understanding first makes the bug list easier to trust.'],
+    ['Code','Script for a beginner','Write a Python script that renames all photos in a folder by the date they were taken. Explain how to run it as if I'+"'"+'ve never used Python.','Naming your experience level changes how much Claude explains.'],
+    ['Life','Dinner from what you have','I have chicken thighs, rice, spinach, and a lemon. Give me three dinner ideas that take under 30 minutes.','The ingredient list and time limit remove generic recipes.'],
+    ['Life','Relaxed trip plan','Plan 3 days in Lisbon for two people who like food and walking, at a relaxed pace. Show each day as morning, afternoon, and evening.','Interests and pace shape the choices. The format makes it easy to scan.'],
+    ['Life','Decide between two options','I'+"'"+'m choosing between two job offers. Ask me the questions that would help me decide, one at a time, then summarize the tradeoffs.','You supply the facts, and Claude structures the decision.']
+  ];
+  (function(){
+    var cats=['All','Write','Learn','Work','Code','Life'];var cur='All';
+    var chips=$('#galchips'),g=$('#gallery');
+    function render(){
+      $$('.chip',chips).forEach(function(c){c.setAttribute('aria-pressed',c.textContent===cur?'true':'false')});
+      g.innerHTML='';
+      GAL.filter(function(x){return cur==='All'||x[0]===cur}).forEach(function(x){
+        var c=el('div',{class:'card'});
+        c.appendChild(el('span',{class:'tag'},x[0]));
+        c.appendChild(el('h3',null,x[1]));
+        var p=el('div',{class:'prompt'});
+        var h=el('div',{class:'prompt-head'});h.appendChild(el('span',null,'Prompt'));h.appendChild(el('button',{type:'button',class:'btn ghost small copy'},'Copy'));
+        p.appendChild(h);p.appendChild(el('p',{class:'prompt-text'},x[2]));
+        c.appendChild(p);
+        var w=el('p',{class:'why'});w.appendChild(el('b',null,'Why it works: '));w.appendChild(document.createTextNode(x[3]));
+        c.appendChild(w);g.appendChild(c);
+      });
+    }
+    cats.forEach(function(c){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},c);b.addEventListener('click',function(){cur=c;render()});chips.appendChild(b)});
+    render();
+  })();
+
+  /* ---------- request builder ---------- */
+  var MK=[
+    ['Document','Create a [one-page project brief] for [my team] about [launching the new onboarding flow]. Include [goals, scope, risks, and next steps]. Keep the tone [clear and direct].','Name the reader and the sections you want.'],
+    ['Slides','Make a [8-slide] deck for [a 10-minute talk to new hires] about [how our support team works]. One idea per slide, with short speaker notes.','Say how long the talk is. It decides how many slides you need.'],
+    ['Spreadsheet','Build a [monthly budget] spreadsheet with columns for [category, planned, actual, and difference]. Add formulas for totals and the difference, and fill in sample rows I can replace.','Ask for formulas and sample rows so you can see how it works.'],
+    ['Small tool','Build a [tip calculator] that works well on a phone. Let me enter the bill, choose a tip percentage, and split it between [2 to 8] people. Show the result clearly.','Describe what the person does and sees. Skip technical details.'],
+    ['Chart','Make a [bar chart] comparing [sales by region] using this data: [paste data]. Label the axes and point out the biggest gap.','Paste real numbers, and say what you want the chart to show.'],
+    ['Diagram','Draw a flowchart showing [how a support ticket moves from submitted to resolved], including [escalation to a manager].','List the steps and any branches in plain words.']
+  ];
+  (function(){
+    var chips=$('#mkchips');
+    function pick(i){
+      $$('.chip',chips).forEach(function(c,j){c.setAttribute('aria-selected',j===i?'true':'false')});
+      $('#mkhead').textContent=MK[i][0]+' template';$('#mktext').textContent=MK[i][1];$('#mktip').textContent='Tip: '+MK[i][2];
+    }
+    MK.forEach(function(m,i){var b=el('button',{type:'button',class:'chip',role:'tab','aria-selected':'false'},m[0]);b.addEventListener('click',function(){pick(i)});chips.appendChild(b)});
+    pick(0);
+  })();
+
+  /* ---------- search game ---------- */
+  var SG=[
+    ['What is the capital of Australia?',false,'A stable fact. Claude knows this without searching.'],
+    ['What did the central bank announce this week?',true,'Recent news. Without search, Claude can'+"'"+'t know it.'],
+    ['Explain how binary search works.',false,'A concept that doesn'+"'"+'t change. No lookup needed.'],
+    ['Which version of this software library is the latest?',true,'Versions change often. Search gives you a current answer.'],
+    ['Who currently holds a particular government job?',true,'Roles change. Anything about the present is worth a search.']
+  ];
+  (function(){
+    var i=0,score=0,answered=false;
+    function load(){
+      answered=false;$('#sq').textContent=SG[i][0];$('#sfb').hidden=true;$('#snext').hidden=true;
+      $('#sbyes').disabled=false;$('#sbno').disabled=false;
+    }
+    function ans(yes){
+      if(answered)return;answered=true;
+      var right=(yes===SG[i][1]);if(right)score++;
+      var fb=$('#sfb');fb.hidden=false;fb.className='feedback '+(right?'ok':'no');
+      fb.textContent=(right?'Right. ':'Not quite. ')+SG[i][2];
+      $('#sscore').textContent=score+' of '+(i+1);
+      $('#sbyes').disabled=true;$('#sbno').disabled=true;
+      var n=$('#snext');n.hidden=false;n.textContent=i<SG.length-1?'Next question':'Play again';
+    }
+    $('#sbyes').addEventListener('click',function(){ans(true)});
+    $('#sbno').addEventListener('click',function(){ans(false)});
+    $('#snext').addEventListener('click',function(){
+      if(i<SG.length-1){i++}else{i=0;score=0;$('#sscore').textContent='0 of 5'}
+      load();
+    });
+    load();
+  })();
+
+  /* ---------- plugins, connectors, MCP chooser ---------- */
+  var PX=[
+    ['Claude should search my email, calendar, or team chat','Connector','A connector links Claude to the service so it can read from it and act in it, with your permission. Add it under Customize, then Connectors. Lesson 10 has the steps.'],
+    ['Claude should write reports or reviews in my team format','Skill','A skill is written instructions Claude loads when a task calls for them. Use one when you want your process followed the same way every time.'],
+    ['My team needs the same tools and process for one product','Plugin','A plugin bundles skills and connectors, and sometimes commands and agents, into one install you can share. Add it from Customize, then Plugins.'],
+    ['My company has an internal tool Claude cannot reach','Custom connector','Add the tool remote MCP server address as a custom connector. A developer may need to build the server first. Custom connectors are in beta, so only add servers you trust.'],
+    ['I built something useful and want others to use it','Package it','Bundle it as a plugin, or build an MCP server. Anyone on a paid plan can submit one to Anthropic directory for review, and on Team and Enterprise an Owner submits it.']
+  ];
+  (function(){
+    var box=$('#xopts'),res=$('#xresult');
+    PX.forEach(function(p){
+      var b=el('button',{type:'button',class:'opt','aria-pressed':'false'},p[0]);
+      b.addEventListener('click',function(){
+        $$('.opt',box).forEach(function(o){o.setAttribute('aria-pressed','false')});
+        b.setAttribute('aria-pressed','true');
+        res.hidden=false;res.innerHTML='';
+        res.appendChild(el('h3',null,p[1]));res.appendChild(el('p',null,p[2]));
+      });
+      box.appendChild(b);
+    });
+  })();
+
+  /* ---------- connectors ---------- */
+  var SV=[
+    {name:'Gmail',
+      unlocks:['Search your inbox','Summarize long threads','Draft replies for you to review'],
+      prompts:['Find the email thread about the venue contract and summarize it in 3 bullets. List every date and amount mentioned.','Draft a reply to the latest message from my landlord. Save it as a draft and do not send it.'],
+      care:'Ask for drafts, and put anything that sends or deletes mail on Needs approval. Read the draft before you send it yourself.'},
+    {name:'GitHub',
+      unlocks:['Look through repositories','Read issues and pull requests','Summarize what changed and why'],
+      prompts:['List the open issues labeled bug in my project and group them by theme.','Summarize the last five merged pull requests and flag any that touch sign-in or payments.'],
+      care:'Start with reading. Put anything that creates issues, comments, or changes code on Needs approval. If GitHub is missing from your directory, ask your Owner or check whether it offers a remote MCP server for a custom connector. To edit code in a project, Claude Code is the better tool (see lesson 12).'},
+    {name:'Slack',
+      unlocks:['Search channels and messages','Read threads','Post messages and create canvases'],
+      prompts:['Search the #launch channel for decisions made this week and list each with who made it.','Draft a status update for #team from my notes below. Show it to me first and do not post it.'],
+      care:'Posts are visible to other people, so keep sending on Needs approval. This connector is not the same as Claude Tag, which is a separate agent that lives in Slack channels.'},
+    {name:'Google Drive',
+      unlocks:['Find documents and files','Read what you can already open','Pull facts into a new summary'],
+      prompts:['Find the Q3 planning doc and list the open questions in it.','Compare the two budget files in my Finance folder and tell me where the totals disagree.'],
+      care:'Claude can only reach what your own account can open. Check sensitive documents before pulling them into a chat you plan to share.'}
+  ];
+  (function(){
+    var chips=$('#svchips'),box=$('#svdetail');
+    function pick(i){
+      $$('.chip',chips).forEach(function(c,j){c.setAttribute('aria-pressed',j===i?'true':'false')});
+      var s=SV[i];box.innerHTML='';
+      var u=el('div',{class:'card'});u.appendChild(el('h3',null,'What it unlocks'));
+      var ul=el('ul');s.unlocks.forEach(function(t){ul.appendChild(el('li',null,t))});u.appendChild(ul);box.appendChild(u);
+      s.prompts.forEach(function(p,k){
+        var d=el('div',{class:'prompt'});var h=el('div',{class:'prompt-head'});
+        h.appendChild(el('span',null,'Try this '+(k+1)));h.appendChild(el('button',{type:'button',class:'btn ghost small copy'},'Copy'));
+        d.appendChild(h);d.appendChild(el('p',{class:'prompt-text'},p));box.appendChild(d);
+      });
+      var c=el('div',{class:'callout'});c.appendChild(el('b',null,'Take care'));c.appendChild(el('span',null,s.care));box.appendChild(c);
+    }
+    SV.forEach(function(s,i){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},s.name);b.addEventListener('click',function(){pick(i)});chips.appendChild(b)});
+    pick(0);
+    var items=['Open Customize, then Connectors','Connect one app you use daily, starting with Gmail or Slack','Turn it on for a chat with the + menu','Ask a read-only question, such as "summarize my last three threads"','Review the permissions and set sending tools to Needs approval'];
+    var ul2=$('#conncheck'),saved=store.get('conn',[]);
+    items.forEach(function(t,i){
+      var li=el('li'),lb=el('label'),cb=el('input',{type:'checkbox',id:'cc'+i});cb.checked=saved.indexOf(i)>=0;
+      cb.addEventListener('change',function(){var s=store.get('conn',[]);var k=s.indexOf(i);if(cb.checked&&k<0)s.push(i);if(!cb.checked&&k>=0)s.splice(k,1);store.set('conn',s)});
+      lb.appendChild(cb);lb.appendChild(el('span',null,t));li.appendChild(lb);ul2.appendChild(li);
+    });
+  })();
+
+  /* ---------- folder organizer ---------- */
+  var DRY='Look at the folder I connected. Do not change anything yet. ';
+  var FO=[
+    {name:'Downloads',
+      before:'Downloads/\n  IMG_4021.jpg\n  invoice (3).pdf\n  resume_final_v2.docx\n  setup-installer.dmg\n  Screenshot 2026-09-02.png\n  taxes-2025.pdf\n  notes.txt',
+      after:'Downloads/\n  Documents/\n    Invoices/\n    Resume/\n    Taxes/\n  Images/\n    Screenshots/\n  Installers/\n  _to_review/',
+      prompt:DRY+'Propose a folder structure that groups files by type and topic, then list which file would move where. Put anything you are unsure about in a folder called _to_review. Wait for my OK before moving anything.',
+      why:'The practice run and the _to_review folder keep you in charge of the uncertain files.'},
+    {name:'Photos',
+      before:'Photos/\n  IMG_0001.jpg\n  IMG_0002.jpg\n  DSC_8841.jpg\n  IMG_0003 copy.jpg\n  video-clip.mov',
+      after:'Photos/\n  2026/\n    07/\n      2026-07-04_001.jpg\n    08/\n      2026-08-14_001.jpg\n  Videos/\n  Possible duplicates/',
+      prompt:DRY+'Sort the photos into year and month folders using the date each was taken, and rename them like 2026-08-14_001.jpg. Put videos in their own folder. Move files that look like duplicates into a folder called Possible duplicates instead of deleting them. Show me the plan first.',
+      why:'A naming pattern and a rule for duplicates mean nothing gets lost.'},
+    {name:'Receipts',
+      before:'Receipts/\n  scan0012.pdf\n  amazon-order.pdf\n  electric bill sept.pdf\n  IMG_5530.png\n  rent-receipt.pdf',
+      after:'Receipts/\n  2026/\n    Utilities/\n    Housing/\n    Shopping/\n  receipts-index.xlsx',
+      prompt:DRY+'Read each receipt and sort it into year and category folders. Rename files like 2026-09_electric-bill.pdf. Then create a spreadsheet called receipts-index.xlsx listing the date, vendor, amount, and new file name, and flag any amount you could not read clearly.',
+      why:'The index spreadsheet is a new file next to your originals, and the flag for unclear amounts tells you where to look.'},
+    {name:'Work files',
+      before:'Work/\n  Contract_final.docx\n  Contract_final_v2.docx\n  Q3 budget.xlsx\n  meeting notes 9-14.txt\n  logo.png\n  proposal-draft.docx',
+      after:'Work/\n  Contracts/\n  Finance/\n  Meetings/\n  Proposals/\n  Assets/\n  _archive/old-versions/',
+      prompt:DRY+'Group these files by purpose and propose clear names. When there are several versions of one document, keep the newest in place and move older ones into _archive/old-versions. Also write a short README listing what each folder is for.',
+      why:'Archiving old versions is safer than deleting them, and the README explains the system to future you.'}
+  ];
+  (function(){
+    var chips=$('#fochips');
+    function pick(i){
+      $$('.chip',chips).forEach(function(c,j){c.setAttribute('aria-pressed',j===i?'true':'false')});
+      var f=FO[i];
+      $('#fobefore').textContent=f.before;$('#foafter').textContent=f.after;
+      $('#foprompt').textContent=f.prompt;$('#fowhy').textContent='Why it works: '+f.why;
+    }
+    FO.forEach(function(f,i){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},f.name);b.addEventListener('click',function(){pick(i)});chips.appendChild(b)});
+    pick(0);
+  })();
+
+  /* ---------- schedule builder ---------- */
+  (function(){
+    var FREQ=['every day','every weekday','every Monday','every Friday','on the first day of each month'];
+    var TASKS=[
+      ['Summarize new files in a folder','Look in my connected folder for files added since the last run. Write a short summary of each, grouped by topic, and save it as a new file in the same folder.'],
+      ['Sort receipts','Sort any new receipts in my connected folder into year and category folders, and add them to receipts-index.xlsx. Do not delete anything.'],
+      ['Propose a Downloads cleanup','Look at my connected Downloads folder and write a plan for tidying it. Do not move anything. Save the plan as a new file I can review.'],
+      ['Weekly status draft','Read the notes in my connected folder from the past week and draft a status update with progress, blockers, and next steps. Save it as a new file.']
+    ];
+    var f=$('#schfreq'),t=$('#schtime'),k=$('#schtask');
+    FREQ.forEach(function(x,i){var o=el('option',{value:String(i)},x.charAt(0).toUpperCase()+x.slice(1));if(i===1)o.selected=true;f.appendChild(o)});
+    TASKS.forEach(function(x,i){k.appendChild(el('option',{value:String(i)},x[0]))});
+    function fmt(v){if(!v)return 'a time of day';var p=v.split(':');var h=parseInt(p[0],10);var ap=h>=12?'PM':'AM';h=h%12||12;return h+':'+p[1]+' '+ap}
+    function out(){
+      $('#schout').textContent='Set up a scheduled task.\nWhen: '+FREQ[+f.value]+' at '+fmt(t.value)+' my local time.\nWhat to do: '+TASKS[+k.value][1]+'\nEach run starts fresh, so make reasonable choices yourself and note them at the top of the result.';
+    }
+    [f,t,k].forEach(function(n){n.addEventListener('input',out)});
+    out();
+  })();
+
+  /* ---------- where Claude lives ---------- */
+  var GOALS=[
+    ['Chat, write, analyze files, or make documents','Claude app','The main Claude app on web, desktop, and mobile. Start here for conversations, files, Projects, artifacts, and research.'],
+    ['Organize folders on my computer or repeat a job on a schedule','Claude desktop app','Connect a folder and Claude can sort, rename, and build files there, with your approval for deletions. Scheduled tasks repeat a job for you. See lesson 11.'],
+    ['Let Claude read my email, Slack, or GitHub','Connectors','Connect the app once under Customize, then Connectors, and turn it on in a chat. Lesson 10 walks through the steps.'],
+    ['Write and change code in my own project from the terminal','Claude Code','A coding assistant for engineers that can carry out multi-step work. It works in your codebase from the terminal, web, desktop, and mobile.'],
+    ['Have Claude do tasks on websites in my browser','Claude in Chrome','A browser extension that works in your real Chrome with your own sign-ins. Good for multi-step web tasks.'],
+    ['Work inside Word, Excel, PowerPoint, or Outlook','Claude for M365','Claude inside Microsoft 365, so you can get help without leaving the tools you already use.'],
+    ['Get help in my team'+"'"+'s Slack','Claude Tag','A team agent that lives in Slack channels, where multiple people can work with it together.'],
+    ['Build my own app or product on Claude','The API and Console','Developers use the Claude Console and API to build Claude into their own products. Start at docs.claude.com.'],
+    ['Run research as a scientist','Claude Science','A research workbench for scientists, run on the lab'+"'"+'s own machines.'],
+    ['Find and fix security holes in code','Claude Security','Finds and patches vulnerabilities in a codebase, built for security teams.']
+  ];
+  (function(){
+    var box=$('#mgoals'),box2=$('#mgoals2'),res=$('#mresult');
+    var DEV=['Claude Code','The API and Console','Claude Science','Claude Security'];
+    GOALS.forEach(function(g){
+      var b=el('button',{type:'button',class:'opt','aria-pressed':'false'},g[0]);
+      b.addEventListener('click',function(){
+        $$('#mgoals .opt, #mgoals2 .opt').forEach(function(o){o.setAttribute('aria-pressed','false')});b.setAttribute('aria-pressed','true');
+        res.hidden=false;res.innerHTML='';res.appendChild(el('h3',null,g[1]));res.appendChild(el('p',null,g[2]));
+        res.appendChild(el('p',{class:'why'},'New to all of this? The Claude app is the right place to start.'));
+      });
+      (DEV.indexOf(g[1])>=0?box2:box).appendChild(b);
+    });
+  })();
+
+  /* ---------- quiz ---------- */
+  var QZ=[
+    ['Which change improves a prompt the most?',['Making it longer with more adjectives','Adding context, audience, and a format','Writing it in all capitals'],1,'Context, audience, and format remove guessing. Length alone doesn'+"'"+'t.'],
+    ['Which model is the fast, light option?',['Haiku','Opus','Fable'],0,'Haiku is built for quick answers and lots of small tasks.'],
+    ['When should you turn on web search?',['For a definition of a stable concept','When you need current information','Whenever you edit your own text'],1,'Search matters for anything that may have changed since training.'],
+    ['What is a Project for?',['Keeping related chats, files, and instructions together','Deleting old chats','Making Claude respond faster'],0,'A Project saves you from re-explaining the same background.'],
+    ['You will rely on a figure Claude gave you. What next?',['Use it as is','Ask Claude to repeat it','Check it against the original source'],2,'Claude can be confidently wrong. Verify anything that matters.'],
+    ['What is an artifact?',['A bug in a response','A piece of work Claude makes that you can keep, edit, and share','A kind of model'],1,'Artifacts are documents, decks, spreadsheets, designs, and small tools made beside the chat.'],
+    ['You want to switch to a new topic. What is best?',['Keep going in the same long chat','Start a new chat','Delete your memory'],1,'A new chat keeps old context from distracting Claude.'],
+    ['Which is for multi-step coding work from your terminal?',['Claude Code','Claude in Chrome','Claude Tag'],0,'Claude Code works in your codebase from the terminal and other surfaces.'],
+    ['Where do you control whether Claude builds memory from your chats?',['In the prompt only','In Settings','You can'+"'"+'t'],1,'Memory generation is a setting. You can also ask Claude to remember or forget something.'],
+    ['Before Claude reorganizes a folder, what is the safest first request?',['Do everything at once','Show a plan of what it would change, without changing anything yet','Delete the old files first'],1,'A practice run lets you catch mistakes before any file moves.'],
+    ['Why should a scheduled task have complete instructions?',['Each run starts fresh and does not remember your earlier chat','Scheduled tasks cannot read text','It makes the task cheaper'],0,'A scheduled run has no memory of the conversation where you set it up, so everything it needs must be in the task.'],
+    ['What does Claude receive when you connect an app using the service sign-in page?',['Your password','Only the access you approve there','Everything in your account, whatever you choose'],1,'You sign in on the service own page and approve specific access. Claude does not see your password, and you can revoke access later.'],
+    ['Which permission is the safest choice for tools that send email or post messages?',['Always allow','Needs approval','Remove the connector for every chat'],1,'Reading can usually run freely. Anything that sends, posts, deletes, or changes should ask you first.'],
+    ['Which piece teaches Claude how your team does a task?',['A connector','A skill','An MCP server'],1,'A skill is written instructions Claude loads when a task calls for them. A connector gives access to a service.'],
+    ['What can one plugin package?',['Only a model setting','Skills, connectors, commands, and agents in one install','Your chat history'],1,'A plugin bundles several pieces so you can install and share them as one unit.'],
+    ['Roughly how big is one token in English?',['A single letter','A short word or part of one, about four characters','A whole paragraph'],1,'Rough rule: about four characters, or three quarters of a word, per token.'],
+    ['What counts toward the context window?',['Only your latest message','Your messages, attached files, Claude replies, and other material in the chat','Only attached files'],1,'Everything Claude has to consider shares the same window, so long chats and big files fill it.']
+  ];
+  (function(){
+    var box=$('#quizbox');var i=0,score=0;
+    function render(){
+      box.innerHTML='';
+      if(i>=QZ.length){
+        var best=Math.max(store.get('best',0),score);store.set('best',best);
+        box.appendChild(el('div',{class:'score'},score+' / '+QZ.length));
+        box.appendChild(el('p',null,score>=7?'Strong work. You know what you need to get started.':score>=5?'A good start. Revisit the lessons you missed.':'Worth another pass through the lessons. Try again when you'+"'"+'re ready.'));
+        box.appendChild(el('p',{class:'why'},'Best score on this device: '+best+' / '+QZ.length));
+        var r=el('button',{type:'button',class:'btn'},'Try again');r.addEventListener('click',function(){i=0;score=0;render()});
+        box.appendChild(r);
+        if(!done.has('quiz'))setDone('quiz',true);
+        return;
+      }
+      var q=QZ[i];
+      box.appendChild(el('div',{class:'eyebrow'},'Question '+(i+1)+' of '+QZ.length));
+      box.appendChild(el('div',{class:'quiz-q'},q[0]));
+      var opts=el('div',{class:'opts'});var answered=false;
+      var fb=el('div',{class:'feedback',hidden:''});var nx=el('button',{type:'button',class:'btn',hidden:''},i<QZ.length-1?'Next question':'See score');
+      q[1].forEach(function(t,k){
+        var b=el('button',{type:'button',class:'opt'},t);
+        b.addEventListener('click',function(){
+          if(answered)return;answered=true;
+          var right=k===q[2];if(right)score++;
+          $$('.opt',opts).forEach(function(o,j){o.disabled=true;if(j===q[2])o.classList.add('right');else if(o===b)o.classList.add('wrong')});
+          fb.hidden=false;fb.className='feedback '+(right?'ok':'no');fb.textContent=(right?'Correct. ':'Not quite. ')+q[3];nx.hidden=false;nx.focus();
+        });
+        opts.appendChild(b);
+      });
+      nx.addEventListener('click',function(){i++;render()});
+      box.appendChild(opts);box.appendChild(fb);box.appendChild(nx);
+    }
+    render();
+  })();
+
+  /* ---------- feature guide ---------- */
+  var FT=[
+    {n:'Chat',c:'Chat',what:'The core of Claude: a conversation where you ask, Claude answers, and you refine.',uses:['Brainstorm, draft, and edit','Explain something at your level','Think through a decision'],say:'Help me decide whether to rent or buy. Ask me what you need to know before you advise me.'},
+    {n:'Model picker',c:'Chat',what:'Choose which Claude model answers, and switch in the middle of a chat.',uses:['Haiku for quick, light tasks','Sonnet for everyday work','Opus or Fable for harder problems'],say:'Here is my plan. Find the three weakest assumptions and explain why each could fail.',where:'Look for the model name in the message box. The models offered depend on your plan.'},
+    {n:'File and image uploads',c:'Chat',what:'Attach documents, PDFs, spreadsheets, images, and code for Claude to read.',uses:['Summarize a long report','Explain a chart or screenshot','Check a spreadsheet for odd values'],say:'Read the attached file. Give me 5 bullets, then list the numbers I should verify against the original.'},
+    {n:'Context window',c:'Chat',what:'How much Claude can consider at once: your messages, files, its replies, and other material in the chat.',uses:['Work through long documents','Keep a project in view','Know when to start fresh'],say:'Summarize the key decisions, facts, and open questions from this chat so I can continue in a new one.',where:'Applies in every chat. See lesson 3.'},
+    {n:'Inline charts and diagrams',c:'Create',what:'Claude can draw charts, diagrams, and small interactive explainers right in its reply.',uses:['See how a process flows','Compare numbers at a glance','Learn a concept visually'],say:'Show me how a bill becomes law as a flowchart, then explain each step in one line.'},
+    {n:'Artifacts',c:'Create',what:'Finished pieces of work that open beside the chat, which you can keep, edit, and share.',uses:['Documents and reports','Slide decks and spreadsheets','Designs, diagrams, and small web tools'],say:'Make a one-page project brief for launching a newsletter, with goals, audience, and a four-week plan.'},
+    {n:'Word, PowerPoint, Excel, and PDF files',c:'Create',what:'Ask for a specific file type when you need one to send or open in another program.',uses:['A .docx to email','A .pptx for a meeting','An .xlsx with formulas'],say:'Make an Excel budget with columns for category, planned, and actual, plus a formula for the difference.'},
+    {n:'Small apps and tools',c:'Create',what:'Describe a tool in plain words and Claude builds a working page you can use.',uses:['Calculators and trackers','Quizzes and study guides','Simple dashboards'],say:'Build a habit tracker for three habits that works on my phone and shows a weekly streak.'},
+    {n:'Web search',c:'Find',what:'Lets Claude look things up online for current information.',uses:['News and recent events','Prices, versions, and schedules','Who currently holds a role'],say:'What changed in the most recent release of this software? Link each claim to its source.',where:'Turn it on from the message box menu or in Settings.'},
+    {n:'Research',c:'Find',what:'A longer mode where Claude runs many searches and writes a sourced report.',uses:['Compare options in depth','Understand a market or topic','Review what is known on a question'],say:'Research the pros and cons of heat pumps versus gas furnaces for a cold climate. Cite your sources.',where:'Availability depends on your plan and settings.'},
+    {n:'Past chat search',c:'Find',what:'Lets Claude look back at earlier conversations when you refer to them.',uses:['Pick up a project after a break','Recall a decision','Reuse a draft'],say:'What did we decide about the venue last week? Remind me of the options.',where:'Turn it on in Settings.'},
+    {n:'Projects',c:'Personalize',what:'A workspace with its own files and instructions shared by every chat inside it.',uses:['A class or course','A job search','A client or long project'],say:'Using the files in this Project, draft this week study plan. Follow my instructions about explaining step by step.'},
+    {n:'Memory',c:'Personalize',what:'Claude can carry useful details between chats, such as your role or ongoing projects.',uses:['Stop repeating your background','Keep preferences consistent','Continue ongoing work'],say:'Remember that I prefer short answers with the recommendation first.',where:'Settings has a switch for generating memory from your chats. You can also ask Claude to forget something.'},
+    {n:'Preferences',c:'Personalize',what:'Standing instructions for tone, detail, and format that apply in every chat.',uses:['Set your tone','Control length','Choose formats'],say:'Explain things plainly, skip long introductions, and use bullets only when I ask.'},
+    {n:'Incognito chats',c:'Personalize',what:'A chat that runs without memory, for when you want a clean slate.',uses:['Sensitive questions','Testing a prompt fresh','Avoiding carry-over'],say:'Treat this as a fresh start. Give me a neutral first take on this decision.'},
+    {n:'Connectors',c:'Connect',what:'Link apps like Gmail, Slack, and Google Drive so Claude can work with your real data.',uses:['Summarize email threads','Search team channels','Find documents'],say:'Find the thread about the venue contract in my email and summarize it in 3 bullets.',where:'Customize, then Connectors. See lesson 10.'},
+    {n:'MCP servers',c:'Connect',what:'The standard behind connectors. A service runs an MCP server, and Claude connects to it to read and act in that service.',uses:['Add a custom connector by server address','Reach an internal tool','Let developers build their own'],say:'List the tools this connector offers, and tell me which ones can send or change things.',where:'Customize, then Connectors, then Add custom connector. See lesson 9.'},
+    {n:'Skills and plugins',c:'Connect',what:'Skills are saved instructions for a kind of task. Plugins bundle skills, connectors, and more into one install.',uses:['Build files your team way','Repeat a workflow reliably','Share a process'],say:'Use my weekly-report skill on the notes below.',where:'Customize, then Skills or Plugins. See lesson 9.'},
+    {n:'Connected folders',c:'Automate',what:'Through the Claude desktop app, give Claude access to folders on your computer.',uses:['Sort and rename files','Build an index spreadsheet','Write reports from your files'],say:'Look at the folder I connected. Do not change anything yet. Propose a tidy structure and wait for my OK.',where:'Open the chat in the desktop app and connect a folder. See lesson 11.'},
+    {n:'Scheduled tasks',c:'Automate',what:'Jobs Claude runs later or on a repeat. Each run starts fresh.',uses:['A Monday summary','A monthly receipt sort','A weekday morning plan'],say:'Set up a scheduled task: every weekday at 8:30 AM, summarize new files in my connected folder.'},
+    {n:'Computer use',c:'Automate',what:'With the desktop app and your permission, Claude can see your screen and operate apps on your computer.',uses:['Work across several apps','Tasks in apps with no connector','Repetitive clicking'],say:'Open my notes app and list the titles of everything I wrote this month.',where:'Needs the Claude desktop app. It is for apps on your computer, not websites.'},
+    {n:'Browser tasks',c:'Automate',what:'Claude can act on websites through the built-in browser or Claude in Chrome.',uses:['Fill in a form','Collect details across sites','Use pages that need your sign-in'],say:'Open the pricing pages for these three tools and put the plans in a table. Ask me before submitting anything.'},
+    {n:'Claude Code',c:'Products',what:'A coding assistant for engineers that can carry out multi-step work. It works in your project from the terminal, web, desktop, and mobile.',uses:['Write and edit code','Fix bugs','Explore a large codebase'],say:'Find where we handle sign-in, explain how it works, and suggest one safe improvement.'},
+    {n:'Claude for M365',c:'Products',what:'Claude inside Microsoft 365 tools.',uses:['Get help inside Word or Excel','Work in Outlook','Stay in the tools you use'],say:'Draft a polite reply to this email and keep it under 100 words.'},
+    {n:'Claude Tag',c:'Products',what:'A team agent that lives in Slack channels, where people can work with it together.',uses:['Answer team questions','Draft updates in a channel','Share help across a group'],say:'Summarize this thread and list who owns each next step.'},
+    {n:'API and Console',c:'Products',what:'The way developers build Claude into their own apps and products.',uses:['Build a support assistant','Automate document processing','Add AI to a product'],say:'Show me a minimal example of calling the API and printing the reply.',where:'Start at docs.claude.com.'},
+    {n:'Claude Science and Claude Security',c:'Products',what:'Specialist tools. Science is a research workbench for scientists. Security finds and patches vulnerabilities in a codebase for security teams.',uses:['Lab research workflows','Code security reviews','Team-run scans'],say:'Summarize the findings and rank the issues by severity.'}
+  ];
+  var CATS=['Chat','Create','Find','Personalize','Connect','Automate','Products'];
+  var CATBLURB={Chat:'Talk and attach',Create:'Make finished work',Find:'Look things up',Personalize:'Remember you',Connect:'Reach your apps',Automate:'Work for you',Products:'Other Claude tools'};
+  (function(){
+    var cur='All',view='Cards';
+    var chips=$('#fchips'),views=$('#fviews'),inp=$('#fsearch');
+    var grid=$('#fgrid'),tw=$('#ftablewrap'),tb=$('#ftable tbody'),map=$('#fmap');
+    function list(){
+      var q=inp.value.trim().toLowerCase();
+      return FT.filter(function(f){
+        if(cur!=='All'&&f.c!==cur)return false;
+        return !q||(f.n+' '+f.what+' '+f.uses.join(' ')).toLowerCase().indexOf(q)>=0;
+      });
+    }
+    function tag(c){return el('span',{class:'tag cat-'+c},c)}
+    function cards(items){
+      grid.innerHTML='';
+      items.forEach(function(f){
+        var c=el('div',{class:'card'});
+        c.appendChild(tag(f.c));
+        c.appendChild(el('h3',null,f.n));
+        c.appendChild(el('p',null,f.what));
+        c.appendChild(el('div',{class:'tree-label'},'Use it for'));
+        var ul=el('ul');f.uses.forEach(function(u){ul.appendChild(el('li',null,u))});c.appendChild(ul);
+        var p=el('div',{class:'prompt'});var h=el('div',{class:'prompt-head'});
+        h.appendChild(el('span',null,'Try saying'));h.appendChild(el('button',{type:'button',class:'btn ghost small copy'},'Copy'));
+        p.appendChild(h);p.appendChild(el('p',{class:'prompt-text'},f.say));c.appendChild(p);
+        if(f.where){var w=el('p',{class:'why'});w.appendChild(el('b',null,'Where: '));w.appendChild(document.createTextNode(f.where));c.appendChild(w)}
+        grid.appendChild(c);
+      });
+    }
+    function table(items){
+      tb.innerHTML='';
+      items.forEach(function(f,i){
+        var tr=el('tr');
+        tr.appendChild(el('td',null,String(FT.indexOf(f)+1)));
+        tr.appendChild(el('td',{class:'nm'},f.n));
+        var tc=el('td');tc.appendChild(tag(f.c));tr.appendChild(tc);
+        tr.appendChild(el('td',{class:'what'},f.what));
+        tr.appendChild(el('td',{class:'use'},f.uses.join('; ')));
+        tr.appendChild(el('td',{class:'mono'},f.say));
+        tr.appendChild(el('td',null,f.where||'\u2014'));
+        tb.appendChild(tr);
+      });
+    }
+    function mapView(items){
+      map.innerHTML='';
+      CATS.forEach(function(c){
+        var its=items.filter(function(f){return f.c===c});
+        if(!its.length)return;
+        var col=el('div',{class:'mcol cat-'+c});
+        var h=el('h3',null,c);h.appendChild(el('span',null,its.length+(its.length===1?' feature':' features')));
+        col.appendChild(h);col.appendChild(el('div',{class:'sub'},CATBLURB[c]));
+        its.forEach(function(f){
+          var b=el('button',{type:'button',class:'mpill',title:'Open details for '+f.n});
+          b.appendChild(el('b',null,f.n));b.appendChild(el('small',null,f.uses[0]));
+          b.addEventListener('click',function(){view='Cards';cur='All';inp.value=f.n;render();window.scrollTo(0,0)});
+          col.appendChild(b);
+        });
+        map.appendChild(col);
+      });
+    }
+    function render(){
+      $$('.chip',chips).forEach(function(c){c.setAttribute('aria-pressed',c.textContent===cur?'true':'false')});
+      $$('.chip',views).forEach(function(c){c.setAttribute('aria-pressed',c.textContent===view?'true':'false')});
+      var items=list();
+      grid.hidden=view!=='Cards';tw.hidden=view!=='Table';map.hidden=view!=='Map';
+      if(view==='Cards')cards(items);else if(view==='Table')table(items);else mapView(items);
+      $('#fcount').textContent=items.length?('Showing '+items.length+' of '+FT.length+' features'):'No features match that. Try a shorter word or pick All.';
+    }
+    ['All'].concat(CATS).forEach(function(c){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},c);b.addEventListener('click',function(){cur=c;render()});chips.appendChild(b)});
+    ['Cards','Table','Map'].forEach(function(v){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},v);b.addEventListener('click',function(){view=v;render()});views.appendChild(b)});
+    inp.addEventListener('input',render);
+    $('#fcopy').addEventListener('click',function(){
+      var rows=[['#','Feature','Category','What it is','Use it for','Try saying','Where to find it']];
+      list().forEach(function(f){rows.push([String(FT.indexOf(f)+1),f.n,f.c,f.what,f.uses.join('; '),f.say,f.where||''])});
+      var text=rows.map(function(r){return r.join('\t')}).join('\n');
+      var btn=$('#fcopy');
+      function ok(){btn.textContent='Copied';setTimeout(function(){btn.textContent='Copy table'},1400)}
+      function fb(){var ta=document.createElement('textarea');ta.value=text;ta.style.position='fixed';ta.style.opacity='0';document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(_){}ta.remove();ok()}
+      try{navigator.clipboard.writeText(text).then(ok,fb)}catch(e){fb()}
+    });
+    render();
+  })();
+
+  /* ---------- glossary ---------- */
+  var GL=[
+    ['Agentic','When Claude carries out multi-step work with tools, such as running code or editing files, instead of only answering.'],
+    ['API','A way for developers to build Claude into their own software.'],
+    ['Artifact','A piece of work Claude makes beside the chat, such as a document, deck, spreadsheet, design, or small tool.'],
+    ['Connected folder','A folder on your computer that you allow Claude to work in through the desktop app.'],
+    ['Connector','A link between Claude and one of your apps so it can work with your data there, with your permission.'],
+    ['Context window','How much text Claude can consider at once in a conversation, including your messages, files, and its replies. Measured in tokens.'],
+    ['Custom connector','A connector you add yourself by entering the web address of a remote MCP server. Only add servers you trust.'],
+    ['Hallucination','When Claude states something false as if it were true. Verify anything important.'],
+    ['Input and output tokens','Input tokens are what you send, such as your prompt and files. Output tokens are what Claude writes back. The API counts them separately.'],
+    ['MCP','Model Context Protocol, a standard way to connect Claude to tools and data sources.'],
+    ['MCP server','The program a service runs so Claude can reach its tools and data. Each connector links to one.'],
+    ['Memory','Details Claude can carry from past chats into new ones, when the setting is on.'],
+    ['Model','A specific version of Claude, such as Haiku, Sonnet, Opus, or Fable.'],
+    ['OAuth','A sign-in method where you approve access on the service own page, so the app connecting to it never receives your password.'],
+    ['Plugin','An installable package that can bundle skills, connectors, commands, and agents for a role, tool, or team.'],
+    ['Preferences','Your standing instructions for tone, detail, and format.'],
+    ['Project','A workspace with its own files and instructions shared by the chats inside it.'],
+    ['Prompt','What you type to Claude. It can include instructions, questions, examples, and pasted material.'],
+    ['Research','A mode where Claude runs many searches and writes a longer, sourced report.'],
+    ['Scheduled task','A job Claude runs later or on a repeat schedule you set. Each run starts fresh, with no memory of the chat that created it.'],
+    ['Skill','A saved set of instructions for doing a certain kind of task well.'],
+    ['Token','A small chunk of text, roughly a short word or part of one. Models read and write in tokens.'],
+    ['Web search','A setting that lets Claude look up current information online.']
+  ];
+  (function(){
+    var dl=$('#gl'),inp=$('#gsearch');
+    function render(){
+      var q=inp.value.trim().toLowerCase();dl.innerHTML='';var n=0;
+      GL.forEach(function(g){
+        if(q&&(g[0]+' '+g[1]).toLowerCase().indexOf(q)<0)return;n++;
+        var d=el('div',{class:'g'});d.appendChild(el('dt',null,g[0]));d.appendChild(el('dd',null,g[1]));dl.appendChild(d);
+      });
+      if(!n)dl.appendChild(el('p',{class:'why'},'No terms match that. Try a shorter word.'));
+    }
+    inp.addEventListener('input',render);render();
+  })();
+
+  document.addEventListener('click',function(e){
+    var b=e.target.closest&&e.target.closest('[data-goto]');
+    if(b)show(b.getAttribute('data-goto'));
+  });
+
+  /* ---------- plain-language helpers ---------- */
+  var SHORT={
+    meet:['Claude is an AI assistant you chat with. You type what you need and it replies. You can also attach files.','A very well-read helper that can write, explain, and plan with you. It can still make mistakes, so check anything important.'],
+    prompting:['The more you tell Claude about what you want, the better its answer.','Briefing a new helper. A clear brief gets a better result than a one-line note.'],
+    tokens:['Claude reads text in small pieces called tokens, and it can only keep a limited amount in view at once. That limit is the context window.','A desk. Everything on the desk is in view. Pile on too much and things slide off the edge.'],
+    examples:['Copy an example, swap in your own details, and send it.','A recipe you adjust to your own taste.'],
+    files:['Attach files so Claude can read them. Use a Project to keep related files and chats together.','A Project is a folder on your desk for one job. Everything for that job stays in one place.'],
+    create:['Ask Claude to make finished things, like documents, slides, spreadsheets, or small tools.','Asking a designer for a first draft, then asking for changes until it is right.'],
+    search:['Claude knows a lot, but not today news. Turn on web search when you need up-to-date answers.','Someone very well read who has been offline since a certain date. Search lets them look things up again.'],
+    customize:['Memory and preferences help Claude remember you, so you do not have to repeat yourself.','Telling your regular coffee shop your usual order once, so you do not have to say it every time.'],
+    extend:['Connectors let Claude reach your apps. Skills teach it your way of doing a task. Plugins bundle both.','A connector is a key to a room. A skill is a recipe card. A plugin is a toolbox holding both. MCP is the standard shape that lets the keys fit.'],
+    connect:['You connect an app once, sign in on its own page, and turn it on in a chat. You stay in control of what Claude can do.','Giving a house sitter a key. You choose which rooms they can enter, and you can take the key back.'],
+    organize:['In the desktop app, Claude can tidy folders and repeat jobs on a schedule. You approve changes first.','An assistant who sorts your filing cabinet, but shows you the plan before moving anything.'],
+    everywhere:['Claude comes in several products. Most people only need the Claude app.',null],
+    habits:['Check important facts, protect private information, and start a fresh chat for a new topic.',null]
+  };
+  (function(){
+    Object.keys(SHORT).forEach(function(id){
+      var sec=$('#'+id);if(!sec)return;
+      var box=el('div',{class:'short'});
+      box.appendChild(el('span',{class:'lbl'},'The short version'));
+      box.appendChild(el('p',null,SHORT[id][0]));
+      if(SHORT[id][1]){var l=el('p',{class:'like'});l.appendChild(el('b',null,'Think of it like: '));l.appendChild(document.createTextNode(SHORT[id][1]));box.appendChild(l)}
+      sec.insertBefore(box,sec.children[1]);
+    });
+  })();
+
+  var QC={
+    meet:['Which statement is true about Claude?',['It never makes mistakes','It can make mistakes, so important facts should be checked','It always knows today news'],1,'Claude is helpful, but it is not perfect. Check anything you will rely on.'],
+    prompting:['Which request will get the better answer?',['Write about dogs.','Write a 150-word intro for new dog owners, in a friendly tone, with one tip for the first week.','Dogs, write something.'],1,'It names the length, the reader, the tone, and what to include.'],
+    tokens:['In the desk comparison, what happens when the desk is overfull?',['Claude gets smarter','Older things can slide off the edge, so details may be lost','Nothing changes'],1,'That is why a very long chat can lose early details. A summary and a new chat help.'],
+    examples:['What should you do with a copied example prompt?',['Send it exactly as it is','Swap in your own details first','Never change it'],1,'Examples are starting points. Your own details make the answer useful to you.'],
+    files:['What is a Project best for?',['Keeping related chats, files, and instructions together','Deleting old files','Making Claude faster'],0,'A Project saves you from explaining the same background again and again.'],
+    create:['After Claude makes a first draft, what is the easiest next step?',['Start over','Ask for the specific changes you want','Give up'],1,'You can refine by talking. Say what to change and Claude updates it.'],
+    search:['When is web search most useful?',['For up-to-date information like news and prices','For explaining how something works in general','Never'],0,'Anything that may have changed recently is worth a search.'],
+    customize:['What does memory do?',['Lets Claude carry useful details between chats, if the setting is on','Deletes your chats','Changes the model'],0,'You control it in Settings, and you can ask Claude to forget something.'],
+    extend:['In the key-and-recipe comparison, a skill is closest to which one?',['A key to a room','A recipe card that tells Claude how you do a task','A toolbox'],1,'A connector is the key, a skill is the recipe card, and a plugin is the toolbox holding both.'],
+    connect:['When you connect an app, what do you do on the app own sign-in page?',['Give Claude your password','Sign in and approve the access you want to allow','Nothing'],1,'You sign in with the app itself and choose the access. Claude does not see your password.'],
+    organize:['What is the safest first request when tidying a folder?',['Ask for a plan, with no changes yet','Ask Claude to delete everything messy','Move it all to the desktop'],0,'A plan first lets you catch mistakes before any file moves.'],
+    everywhere:['Where should most new users start?',['The Claude app on web, desktop, or mobile','The developer API','A terminal coding tool'],0,'The Claude app covers chat, files, Projects, and creating things.'],
+    habits:['Before you rely on a number Claude gave you, what should you do?',['Check it against the original source','Assume it is right','Ask again until it agrees'],0,'Claude can be confidently wrong, so check what matters.']
+  };
+  (function(){
+    Object.keys(QC).forEach(function(id){
+      var sec=$('#'+id);var pager=sec&&$('.pager',sec);if(!pager)return;
+      var q=QC[id];var box=el('div',{class:'qc'});
+      box.appendChild(el('div',{class:'eyebrow'},'Quick check'));
+      box.appendChild(el('div',{class:'quiz-q'},q[0]));
+      var opts=el('div',{class:'opts'});var fb=el('div',{class:'feedback',hidden:''});
+      q[1].forEach(function(t,k){
+        var b=el('button',{type:'button',class:'opt'},t);
+        b.addEventListener('click',function(){
+          fb.hidden=false;
+          if(k===q[2]){
+            b.classList.add('right');$$('.opt',opts).forEach(function(o){o.disabled=true});
+            fb.className='feedback ok';fb.textContent='Correct. '+q[3]+' When you are ready, mark the lesson complete below.';
+          }else{
+            b.classList.add('wrong');b.disabled=true;
+            fb.className='feedback no';fb.textContent='Not quite. Try another answer.';
+          }
+        });
+        opts.appendChild(b);
+      });
+      box.appendChild(opts);box.appendChild(fb);
+      sec.insertBefore(box,pager);
+    });
+  })();
+
+  /* tap-to-explain words */
+  var pop=el('div',{class:'pop',role:'dialog',hidden:''});document.body.appendChild(pop);
+  function hidePop(){pop.hidden=true}
+  (function(){
+    var defs={};GL.forEach(function(g){defs[g[0].toLowerCase()]=g});
+    var terms=[['token','token'],['context window','context window'],['connector','connector'],['MCP','mcp'],['plugin','plugin'],['skill','skill'],['artifact','artifact'],['scheduled task','scheduled task'],['OAuth','oauth']];
+    var EXCL='button,a,code,pre,textarea,h1,h2,h3,summary,.tag,.prompt,.chip,.opt,.eyebrow,.dot,th,.rail,.pager,.stat,.stats,select,option,label,output,small,.tm,.rail-label,.tree-label,.lbl,.mod-count,.pop';
+    var re=terms.map(function(t){return new RegExp('\\b('+t[0].replace(/ /g,'\\s+')+')(s)?\\b','i')});
+    var skip={quiz:1,features:1,glossary:1,overview:1};
+    LESSONS.forEach(function(l){
+      if(skip[l[0]])return;
+      var sec=$('#'+l[0]);if(!sec)return;
+      var used={};
+      var w=document.createTreeWalker(sec,NodeFilter.SHOW_TEXT,null);
+      var nodes=[];while(w.nextNode())nodes.push(w.currentNode);
+      for(var n=0;n<nodes.length;n++){
+        var node=nodes[n];var par=node.parentNode;
+        if(!par||par.closest(EXCL))continue;
+        for(var t=0;t<terms.length;t++){
+          if(used[t])continue;
+          var m=re[t].exec(node.nodeValue);
+          if(!m)continue;
+          used[t]=1;
+          var before=node.nodeValue.slice(0,m.index),after=node.nodeValue.slice(m.index+m[0].length);
+          var b=el('button',{type:'button',class:'gl','data-term':terms[t][1]},m[0]);
+          var frag=document.createDocumentFragment();
+          if(before)frag.appendChild(document.createTextNode(before));
+          frag.appendChild(b);
+          var aft=null;if(after){aft=document.createTextNode(after);frag.appendChild(aft)}
+          par.replaceChild(frag,node);
+          if(aft)nodes.splice(n+1,0,aft);
+          break;
+        }
+      }
+    });
+    document.addEventListener('click',function(e){
+      var g=e.target.closest&&e.target.closest('.gl');
+      if(!g){if(!(e.target.closest&&e.target.closest('.pop')))hidePop();return}
+      var d=defs[g.getAttribute('data-term')];if(!d){return}
+      pop.innerHTML='';pop.appendChild(el('b',null,d[0]));pop.appendChild(el('span',null,d[1]));
+      var more=el('div');var bt=el('button',{type:'button',class:'btn ghost small'},'Open glossary');
+      bt.addEventListener('click',function(){hidePop();show('glossary')});more.appendChild(bt);pop.appendChild(more);
+      pop.hidden=false;
+      var r=g.getBoundingClientRect(),pw=pop.offsetWidth,ph=pop.offsetHeight;
+      var left=Math.max(16,Math.min(r.left,window.innerWidth-pw-16));
+      var top=r.bottom+8;if(top+ph>window.innerHeight-8)top=Math.max(8,r.top-ph-8);
+      pop.style.left=left+'px';pop.style.top=top+'px';
+    });
+    document.addEventListener('keydown',function(e){if(e.key==='Escape')hidePop()});
+    window.addEventListener('scroll',hidePop,{passive:true});
+  })();
+
+  /* text size */
+  (function(){
+    var btns=$$('.tsize button');
+    function apply(v){
+      document.documentElement.style.fontSize=v+'%';
+      btns.forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-fs')===String(v)?'true':'false')});
+      store.set('fs',v);
+    }
+    btns.forEach(function(b){b.addEventListener('click',function(){apply(+b.getAttribute('data-fs'))})});
+    apply(store.get('fs',100));
+  })();
+
+  /* ---------- boot ---------- */
+  LESSONS.forEach(function(l,i){var e=$('#'+l[0]+' .eyebrow');if(e)e.textContent='Lesson '+(i+1)+' of '+LESSONS.length+' \u00b7 '+modName(l[3])});
+  buildPagers();updateProgress();
+  var start=(location.hash||'').replace('#','')||store.get('last','overview');
+  show(start);
+  window.addEventListener('hashchange',function(){var h=location.hash.replace('#','');if(h&&h!==current)show(h)});
+})();
+</script>
+</body>
+</html>
