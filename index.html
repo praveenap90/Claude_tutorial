@@ -2,13 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<style>
-:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
-body{margin:0;font:14px system-ui,sans-serif}
-img{max-width:100%}
-[hidden]{display:none!important}
-</style>
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<style>:root{color-scheme:light;padding-top:env(safe-area-inset-top);padding-bottom:env(safe-area-inset-bottom)}body{margin:0;font:14px system-ui,sans-serif}img{max-width:100%}[hidden]{display:none!important}</style>
 <title>Claude Learning Guide</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -59,14 +54,14 @@ button,input,select,textarea{font:inherit;color:inherit}
 .top-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
 .brand{font-family:var(--font-display);font-weight:700;font-size:1.3rem;letter-spacing:-0.01em}
 .brand small{display:block;font-family:var(--font-body);font-weight:400;font-size:.8rem;color:var(--muted);letter-spacing:0}
-.prog{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 220px;max-width:360px}
+.prog{display:flex;align-items:center;gap:12px;min-width:0;flex:1 1 180px;max-width:260px}
 .meter{flex:1;height:8px;background:var(--surface2);border-radius:99px;overflow:hidden}
 .meter span{display:block;height:100%;background:var(--accent);width:0;transition:width .3s}
 .prog-label{font-size:.85rem;color:var(--muted);white-space:nowrap;font-variant-numeric:tabular-nums}
 
 /* shell */
 .shell{display:grid;grid-template-columns:16.5rem minmax(0,1fr);gap:32px;padding-top:24px}
-.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + 5.5rem);align-self:start;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - 100px);overflow:auto}
+.rail{position:sticky;top:calc(env(safe-area-inset-top,0px) + var(--topH,5.5rem) + 12px);align-self:start;display:flex;flex-direction:column;gap:2px;max-height:calc(100vh - var(--topH,5.5rem) - 36px);overflow:auto}
 .rail-label{font-size:.72rem;text-transform:uppercase;letter-spacing:.09em;color:var(--muted);padding:12px 12px 4px}
 .rail button{display:flex;align-items:center;gap:10px;text-align:left;background:none;border:0;border-radius:8px;padding:9px 12px;cursor:pointer;color:var(--ink);min-width:0}
 .rail button:hover{background:var(--surface2)}
@@ -172,9 +167,19 @@ tr:last-child td{border-bottom:0}
 .mock .bar{font-family:var(--font-mono);font-size:.78rem;color:var(--muted);display:flex;gap:8px;flex-wrap:wrap}
 .mock .bar span{background:var(--surface2);border-radius:6px;padding:2px 8px}
 
+/* compact header */
+@media (max-width:1180px){.tsize span{display:none}}
+@media (max-width:860px){
+  .top{position:static;padding-block:10px}
+  .top-row{gap:10px}
+  .brand small{display:none}
+  .prog{flex:1 1 100%;max-width:none}
+}
+
 /* plain-language helpers */
 .tsize{display:flex;align-items:center;gap:6px;font-size:.8rem;color:var(--muted)}
 .tsize button{background:var(--surface);border:1px solid var(--line);border-radius:8px;min-width:38px;min-height:38px;cursor:pointer;font-weight:600;line-height:1}
+.tsize button.tx{padding:0 12px;min-width:56px;font-size:.85rem}
 .tsize button[aria-pressed="true"]{background:var(--accent);color:var(--on-accent);border-color:var(--accent)}
 .short{background:var(--accent-soft);border-radius:14px;padding:16px 18px;display:flex;flex-direction:column;gap:8px}
 .short .lbl{font-size:.74rem;text-transform:uppercase;letter-spacing:.1em;font-weight:700;color:var(--accent)}
@@ -271,6 +276,7 @@ td.use{min-width:200px}
 .steps li::before{content:counter(st);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:600;font-size:.85rem}
 .sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .sched label{display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:600}
+.sched textarea{grid-column:auto;font-weight:400;min-height:84px}
 .sched select,.sched input{grid-column:auto;font-weight:400;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
 
 /* pager */
@@ -288,14 +294,13 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
 @media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
 
-</head>
-<body>
 <div class="wrap">
   <header class="top">
     <div class="top-row">
-      <div class="brand">Claude Learning Guide<small>Fourteen short lessons in four parts, each with something to try</small></div>
-      <div class="tsize" role="group" aria-label="Text size"><span>Text size</span><button type="button" data-fs="100" aria-pressed="true" aria-label="Normal text" style="font-size:.85rem">A</button><button type="button" data-fs="118" aria-pressed="false" aria-label="Large text" style="font-size:1.05rem">A</button><button type="button" data-fs="136" aria-pressed="false" aria-label="Extra large text" style="font-size:1.25rem">A</button></div>
-      <div class="prog"><div class="meter" role="progressbar" aria-label="Lessons completed" aria-valuemin="0" aria-valuemax="14" id="meterbox"><span id="meterfill"></span></div><div class="prog-label" id="proglabel">0 of 14 done</div></div>
+      <div class="brand">Claude Learning Guide<small>Sixteen short lessons in four parts, each with something to try</small></div>
+      <div class="tsize" id="sizectl" role="group" aria-label="Text size"><span>Text size</span><button type="button" data-fs="100" aria-pressed="true" aria-label="Normal text" style="font-size:.85rem">A</button><button type="button" data-fs="118" aria-pressed="false" aria-label="Large text" style="font-size:1.05rem">A</button><button type="button" data-fs="136" aria-pressed="false" aria-label="Extra large text" style="font-size:1.25rem">A</button></div>
+      <div class="tsize" id="themectl" role="group" aria-label="Color theme"><span>Theme</span><button type="button" class="tx" data-mode="light" aria-pressed="false">Light</button><button type="button" class="tx" data-mode="dark" aria-pressed="false">Dark</button><button type="button" class="tx" data-mode="auto" aria-pressed="true">Auto</button></div>
+      <div class="prog"><div class="meter" role="progressbar" aria-label="Lessons completed" aria-valuemin="0" aria-valuemax="16" id="meterbox"><span id="meterfill"></span></div><div class="prog-label" id="proglabel">0 of 16 done</div></div>
     </div>
   </header>
 
@@ -309,7 +314,7 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
         <div>
           <div class="eyebrow">Start here</div>
           <h2>Learn Claude, one step at a time</h2>
-          <p class="lead" style="margin-top:10px">Fourteen short lessons in four parts, each with something to try. Go in order, or jump to what you need.</p>
+          <p class="lead" style="margin-top:10px">Sixteen short lessons in four parts, each with something to try. Go in order, or jump to what you need.</p>
         </div>
         <div class="short"><span class="lbl">How this guide works</span>
           <p><b>1.</b> Read the short version at the top of each lesson. <b>2.</b> Try the interactive example. <b>3.</b> Answer the quick check at the bottom.</p>
@@ -599,7 +604,7 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
             <span class="farrow" aria-hidden="true"></span>
             <div class="fbox claude">Claude</div>
             <span class="farrow" aria-hidden="true"></span>
-            <div class="fplugin"><span class="plabel">Plugin (optional): one install for both</span>
+            <div class="fplugin"><span class="plabel">Plugin (optional)</span>
               <div class="fbox sk">Skill<small>Your steps, format, or checklist</small></div>
               <div class="fbox cn">Connector<small>A link to a service MCP server</small></div>
             </div>
@@ -667,10 +672,61 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
         <div class="pager" data-for="extend"></div>
       </section>
 
+      <!-- 9B SKILLS -->
+      <section class="lesson" id="skills" hidden>
+        <div>
+          <div class="eyebrow">Lesson 10</div>
+          <h2>Skills: teach Claude your way of doing things</h2>
+          <p class="lead" style="margin-top:10px">A skill is a short set of written instructions for one kind of task, such as your weekly report or your meeting notes. Claude uses it when a task calls for it, so you stop re-explaining the same steps.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>Skill, instructions, or memory?</h3><span>Pick the right tool</span></div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Tool</th><th>Best for</th><th>Example</th></tr></thead>
+            <tbody>
+              <tr><td><b>A prompt</b></td><td>One-off requests</td><td>"Summarize this article in 3 bullets."</td></tr>
+              <tr><td><b>Project instructions</b></td><td>Background for one body of work</td><td>"This project is our wedding. Budget is fixed."</td></tr>
+              <tr><td><b>Preferences and memory</b></td><td>Facts about you, across all chats</td><td>"Keep answers short, recommendation first."</td></tr>
+              <tr><td><b>A skill</b></td><td>A repeatable procedure with steps and a set output</td><td>"Every Friday report: these sections, this order, this tone."</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div class="panel" id="skchoose">
+          <div class="panel-title"><h3>Would a skill help?</h3><span>Tap a situation</span></div>
+          <div class="chips" id="skchips" role="group" aria-label="Situation"></div>
+          <div class="result" id="skresult" hidden></div>
+        </div>
+
+        <div class="panel" id="skbuild">
+          <div class="panel-title"><h3>Try it: draft a skill</h3><span>Fill in the boxes, then copy the draft</span></div>
+          <div class="sched">
+            <label for="sk_name">Name<input type="text" id="sk_name" value="Weekly report"></label>
+            <label for="sk_when">Use it when<input type="text" id="sk_when" value="I ask for my weekly status report"></label>
+            <label for="sk_steps">Steps (one per line)<textarea id="sk_steps" rows="4">Read the notes I paste in
+Group the work into Done, In progress, and Blocked
+Write two sentences of summary at the top</textarea></label>
+            <label for="sk_out">What the result looks like<input type="text" id="sk_out" value="One page, plain language, no jargon"></label>
+            <label for="sk_rules">Rules (one per line)<textarea id="sk_rules" rows="3">Never invent numbers
+Ask me if something is unclear</textarea></label>
+          </div>
+          <div class="prompt"><div class="prompt-head"><span>Skill draft</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="skout"></p></div>
+          <p class="why">Paste the draft into a chat and ask Claude to polish it, then add it under Customize, then Skills. Menu names and who can add skills depend on your plan, so check the help center if yours looks different.</p>
+        </div>
+
+        <div class="grid">
+          <div class="card"><span class="tag go">Already built in</span><h3>File skills</h3><p>Claude already has skills for making Word documents, PowerPoint decks, Excel sheets, and PDFs, which is why it can hand you finished files.</p></div>
+          <div class="card"><h3>Tips for good skills</h3><ul><li>One skill, one job</li><li>Say when it should be used</li><li>Describe the finished result, not only the steps</li><li>Test it on a small example first</li></ul></div>
+          <div class="card"><h3>Skills and plugins</h3><p>A plugin can bundle several skills with connectors so a whole team installs them together.</p><div class="chips"><button type="button" class="btn ghost small" data-goto="extend">How they fit</button></div></div>
+        </div>
+        <div class="pager" data-for="skills"></div>
+      </section>
+
       <!-- 8 CONNECT YOUR APPS -->
       <section class="lesson" id="connect" hidden>
         <div>
-          <div class="eyebrow">Lesson 10</div>
+          <div class="eyebrow">Lesson 11</div>
           <h2>Connect Gmail, GitHub, Slack, and more</h2>
           <p class="lead" style="margin-top:10px">Connectors let Claude read from the apps where your work lives and, with your approval, act in them. Instead of pasting an email thread into the chat, you connect Gmail once and ask for a summary of the thread about the venue contract.</p>
         </div>
@@ -730,7 +786,7 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
       <!-- 9 ORGANIZE AND AUTOMATE -->
       <section class="lesson" id="organize" hidden>
         <div>
-          <div class="eyebrow">Lesson 11</div>
+          <div class="eyebrow">Lesson 12</div>
           <h2>Organize files and automate tasks</h2>
           <p class="lead" style="margin-top:10px">With the Claude desktop app, Claude can work on folders on your computer: sort and rename files, build an index, write a report. It can also repeat a job for you on a schedule. What is available depends on your plan and settings.</p>
         </div>
@@ -782,10 +838,62 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
         <div class="pager" data-for="organize"></div>
       </section>
 
+      <!-- 9C DELEGATE -->
+      <section class="lesson" id="delegate" hidden>
+        <div>
+          <div class="eyebrow">Lesson 13</div>
+          <h2>Hand off bigger tasks</h2>
+          <p class="lead" style="margin-top:10px">Beyond chat, Claude can take on a multi-step job, work through it on its own, and come back with finished files. You describe the outcome, check in when you like, and review the result.</p>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>How a hand-off runs</h3><span>You stay in charge</span></div>
+          <ol class="steps">
+            <li><span><b>You describe the outcome.</b> Say what you want at the end, not each click along the way.</span></li>
+            <li><span><b>Claude says what it is about to do</b> and sets up a task list, so you can see what is done and what is left.</span></li>
+            <li><span><b>It works through the steps</b> using the tools you have allowed, such as search, files, and connected apps. It may pause to ask for approval.</span></li>
+            <li><span><b>It checks its work,</b> then hands you the finished file or answer with a short summary.</span></li>
+            <li><span><b>If you step away,</b> Claude takes the most reasonable reading of your request and notes that choice at the top of its work, so you can correct it.</span></li>
+          </ol>
+        </div>
+
+        <div class="panel" id="hobuild">
+          <div class="panel-title"><h3>Try it: write a hand-off brief</h3><span>Pick an example or fill in your own</span></div>
+          <div class="chips" id="hochips" role="group" aria-label="Example hand-off"></div>
+          <div class="sched">
+            <label for="ho_goal">The goal<input type="text" id="ho_goal"></label>
+            <label for="ho_use">What it is for<input type="text" id="ho_use"></label>
+            <label for="ho_done">Done looks like<input type="text" id="ho_done"></label>
+            <label for="ho_limits">Limits<input type="text" id="ho_limits"></label>
+            <label for="ho_unsure">If something is unclear<input type="text" id="ho_unsure"></label>
+          </div>
+          <div class="prompt"><div class="prompt-head"><span>Hand-off brief</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="hoout"></p></div>
+        </div>
+
+        <div class="panel">
+          <div class="panel-title"><h3>What to hand off, and what to keep</h3><span>A simple rule of thumb</span></div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Good to hand off</th><th>Better to keep yourself</th></tr></thead>
+            <tbody>
+              <tr><td>Research that needs many sources and a written summary</td><td>Final decisions with real consequences</td></tr>
+              <tr><td>Turning rough notes into a deck or report</td><td>Anything you cannot check afterwards</td></tr>
+              <tr><td>Sorting and renaming files, with a plan first</td><td>Sending messages or payments on your behalf without review</td></tr>
+              <tr><td>Repeat jobs that follow the same steps each time</td><td>Tasks where the goal is still fuzzy</td></tr>
+            </tbody>
+          </table></div>
+        </div>
+
+        <div class="callout"><b>Stay safe</b><span>Start with tasks that read and write new files. Keep approvals on for anything that sends, deletes, or changes things in your apps, and review the result before you rely on it.</span></div>
+        <div class="grid">
+          <div class="card"><h3>Related lessons</h3><div class="chips"><button type="button" class="btn ghost small" data-goto="organize">Folders and schedules</button><button type="button" class="btn ghost small" data-goto="connect">Connect apps</button><button type="button" class="btn ghost small" data-goto="skills">Skills</button></div></div>
+        </div>
+        <div class="pager" data-for="delegate"></div>
+      </section>
+
       <!-- 9 EVERYWHERE -->
       <section class="lesson" id="everywhere" hidden>
         <div>
-          <div class="eyebrow">Lesson 12</div>
+          <div class="eyebrow">Lesson 14</div>
           <h2>Where Claude lives</h2>
           <p class="lead" style="margin-top:10px">The main Claude app runs on web, desktop, and mobile. There are also tools for coding, browsing, and team work. Choose what you're trying to do and see which fits.</p>
         </div>
@@ -801,7 +909,7 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
       <!-- 9 HABITS -->
       <section class="lesson" id="habits" hidden>
         <div>
-          <div class="eyebrow">Lesson 13</div>
+          <div class="eyebrow">Lesson 15</div>
           <h2>Using Claude well</h2>
           <p class="lead" style="margin-top:10px">A few habits separate people who get steady value from people who get stuck.</p>
         </div>
@@ -826,9 +934,9 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
       <!-- 10 QUIZ -->
       <section class="lesson" id="quiz" hidden>
         <div>
-          <div class="eyebrow">Lesson 14</div>
+          <div class="eyebrow">Lesson 16</div>
           <h2>Check yourself</h2>
-          <p class="lead" style="margin-top:10px">Seventeen questions. You get an explanation after each answer.</p>
+          <p class="lead" style="margin-top:10px">Nineteen questions. You get an explanation after each answer.</p>
         </div>
         <div class="panel" id="quizbox"></div>
         <div class="pager" data-for="quiz"></div>
@@ -899,8 +1007,10 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
     ['search','Search and research','5 min','work','When to use web search and Research for current information.'],
     ['customize','Make Claude yours','4 min','extend','Memory and preferences, so you repeat yourself less.'],
     ['extend','Plugins, connectors, MCP','8 min','extend','How plugins, connectors, skills, and MCP fit together.'],
+    ['skills','Skills','6 min','extend','Teach Claude a repeatable way of doing a task, and draft your first skill.'],
     ['connect','Connect your apps','7 min','extend','Connect Gmail, GitHub, Slack, and Drive, step by step.'],
     ['organize','Organize and automate','7 min','extend','Clean up folders on your computer and schedule repeat jobs.'],
+    ['delegate','Hand off bigger tasks','6 min','extend','Let Claude work through a multi-step job, and brief it well.'],
     ['everywhere','Where Claude lives','3 min','further','Which Claude product fits what you are trying to do.'],
     ['habits','Using it well','4 min','further','Fixes for common problems, plus verifying and protecting data.'],
     ['quiz','Check yourself','5 min','further','Test what you learned, with an explanation after each answer.']
@@ -1296,7 +1406,7 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
     {name:'GitHub',
       unlocks:['Look through repositories','Read issues and pull requests','Summarize what changed and why'],
       prompts:['List the open issues labeled bug in my project and group them by theme.','Summarize the last five merged pull requests and flag any that touch sign-in or payments.'],
-      care:'Start with reading. Put anything that creates issues, comments, or changes code on Needs approval. If GitHub is missing from your directory, ask your Owner or check whether it offers a remote MCP server for a custom connector. To edit code in a project, Claude Code is the better tool (see lesson 12).'},
+      care:'Start with reading. Put anything that creates issues, comments, or changes code on Needs approval. If GitHub is missing from your directory, ask your Owner or check whether it offers a remote MCP server for a custom connector. To edit code in a project, Claude Code is the better tool (see lesson 14).'},
     {name:'Slack',
       unlocks:['Search channels and messages','Read threads','Post messages and create canvases'],
       prompts:['Search the #launch channel for decisions made this week and list each with who made it.','Draft a status update for #team from my notes below. Show it to me first and do not post it.'],
@@ -1390,7 +1500,7 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
   /* ---------- where Claude lives ---------- */
   var GOALS=[
     ['Chat, write, analyze files, or make documents','Claude app','The main Claude app on web, desktop, and mobile. Start here for conversations, files, Projects, artifacts, and research.'],
-    ['Organize folders on my computer or repeat a job on a schedule','Claude desktop app','Connect a folder and Claude can sort, rename, and build files there, with your approval for deletions. Scheduled tasks repeat a job for you. See lesson 11.'],
+    ['Organize folders on my computer or repeat a job on a schedule','Claude desktop app','Connect a folder and Claude can sort, rename, and build files there, with your approval for deletions. Scheduled tasks repeat a job for you. See lesson 12.'],
     ['Let Claude read my email, Slack, or GitHub','Connectors','Connect the app once under Customize, then Connectors, and turn it on in a chat. Lesson 10 walks through the steps.'],
     ['Write and change code in my own project from the terminal','Claude Code','A coding assistant for engineers that can carry out multi-step work. It works in your codebase from the terminal, web, desktop, and mobile.'],
     ['Have Claude do tasks on websites in my browser','Claude in Chrome','A browser extension that works in your real Chrome with your own sign-ins. Good for multi-step web tasks.'],
@@ -1432,7 +1542,9 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
     ['Which piece teaches Claude how your team does a task?',['A connector','A skill','An MCP server'],1,'A skill is written instructions Claude loads when a task calls for them. A connector gives access to a service.'],
     ['What can one plugin package?',['Only a model setting','Skills, connectors, commands, and agents in one install','Your chat history'],1,'A plugin bundles several pieces so you can install and share them as one unit.'],
     ['Roughly how big is one token in English?',['A single letter','A short word or part of one, about four characters','A whole paragraph'],1,'Rough rule: about four characters, or three quarters of a word, per token.'],
-    ['What counts toward the context window?',['Only your latest message','Your messages, attached files, Claude replies, and other material in the chat','Only attached files'],1,'Everything Claude has to consider shares the same window, so long chats and big files fill it.']
+    ['What counts toward the context window?',['Only your latest message','Your messages, attached files, Claude replies, and other material in the chat','Only attached files'],1,'Everything Claude has to consider shares the same window, so long chats and big files fill it.'],
+    ['Where do you put a fact that should apply in every chat, such as "keep answers short"?',['A skill','Preferences','A scheduled task'],1,'Preferences apply everywhere. Skills are for repeatable procedures.'],
+    ['Before handing off a bigger task, which request is best?',['Do my project','Goal, what done looks like, and limits','Only a list of clicks to make'],1,'Describe the outcome and the limits. Claude plans the steps.']
   ];
   (function(){
     var box=$('#quizbox');var i=0,score=0;
@@ -1486,11 +1598,12 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
     {n:'Memory',c:'Personalize',what:'Claude can carry useful details between chats, such as your role or ongoing projects.',uses:['Stop repeating your background','Keep preferences consistent','Continue ongoing work'],say:'Remember that I prefer short answers with the recommendation first.',where:'Settings has a switch for generating memory from your chats. You can also ask Claude to forget something.'},
     {n:'Preferences',c:'Personalize',what:'Standing instructions for tone, detail, and format that apply in every chat.',uses:['Set your tone','Control length','Choose formats'],say:'Explain things plainly, skip long introductions, and use bullets only when I ask.'},
     {n:'Incognito chats',c:'Personalize',what:'A chat that runs without memory, for when you want a clean slate.',uses:['Sensitive questions','Testing a prompt fresh','Avoiding carry-over'],say:'Treat this as a fresh start. Give me a neutral first take on this decision.'},
-    {n:'Connectors',c:'Connect',what:'Link apps like Gmail, Slack, and Google Drive so Claude can work with your real data.',uses:['Summarize email threads','Search team channels','Find documents'],say:'Find the thread about the venue contract in my email and summarize it in 3 bullets.',where:'Customize, then Connectors. See lesson 10.'},
+    {n:'Connectors',c:'Connect',what:'Link apps like Gmail, Slack, and Google Drive so Claude can work with your real data.',uses:['Summarize email threads','Search team channels','Find documents'],say:'Find the thread about the venue contract in my email and summarize it in 3 bullets.',where:'Customize, then Connectors. See lesson 11.'},
     {n:'MCP servers',c:'Connect',what:'The standard behind connectors. A service runs an MCP server, and Claude connects to it to read and act in that service.',uses:['Add a custom connector by server address','Reach an internal tool','Let developers build their own'],say:'List the tools this connector offers, and tell me which ones can send or change things.',where:'Customize, then Connectors, then Add custom connector. See lesson 9.'},
-    {n:'Skills and plugins',c:'Connect',what:'Skills are saved instructions for a kind of task. Plugins bundle skills, connectors, and more into one install.',uses:['Build files your team way','Repeat a workflow reliably','Share a process'],say:'Use my weekly-report skill on the notes below.',where:'Customize, then Skills or Plugins. See lesson 9.'},
-    {n:'Connected folders',c:'Automate',what:'Through the Claude desktop app, give Claude access to folders on your computer.',uses:['Sort and rename files','Build an index spreadsheet','Write reports from your files'],say:'Look at the folder I connected. Do not change anything yet. Propose a tidy structure and wait for my OK.',where:'Open the chat in the desktop app and connect a folder. See lesson 11.'},
+    {n:'Skills and plugins',c:'Connect',what:'Skills are saved instructions for a kind of task. Plugins bundle skills, connectors, and more into one install.',uses:['Build files your team way','Repeat a workflow reliably','Share a process'],say:'Use my weekly-report skill on the notes below.',where:'Customize, then Skills or Plugins. See lessons 9 and 10.'},
+    {n:'Connected folders',c:'Automate',what:'Through the Claude desktop app, give Claude access to folders on your computer.',uses:['Sort and rename files','Build an index spreadsheet','Write reports from your files'],say:'Look at the folder I connected. Do not change anything yet. Propose a tidy structure and wait for my OK.',where:'Open the chat in the desktop app and connect a folder. See lesson 12.'},
     {n:'Scheduled tasks',c:'Automate',what:'Jobs Claude runs later or on a repeat. Each run starts fresh.',uses:['A Monday summary','A monthly receipt sort','A weekday morning plan'],say:'Set up a scheduled task: every weekday at 8:30 AM, summarize new files in my connected folder.'},
+    {n:'Longer tasks',c:'Automate',what:'Hand off a multi-step job. Claude plans it, works through it with a task list, and returns finished files.',uses:['Research with a written summary','Turn notes into a deck','Sort a folder after you approve a plan'],say:'Please handle this task from start to finish. Goal: ... Done looks like: ... Limits: ...',where:'Chat, with the desktop app for files on your computer. See lesson 13.'},
     {n:'Computer use',c:'Automate',what:'With the desktop app and your permission, Claude can see your screen and operate apps on your computer.',uses:['Work across several apps','Tasks in apps with no connector','Repetitive clicking'],say:'Open my notes app and list the titles of everything I wrote this month.',where:'Needs the Claude desktop app. It is for apps on your computer, not websites.'},
     {n:'Browser tasks',c:'Automate',what:'Claude can act on websites through the built-in browser or Claude in Chrome.',uses:['Fill in a form','Collect details across sites','Use pages that need your sign-in'],say:'Open the pricing pages for these three tools and put the plans in a table. Ask me before submitting anything.'},
     {n:'Claude Code',c:'Products',what:'A coding assistant for engineers that can carry out multi-step work. It works in your project from the terminal, web, desktop, and mobile.',uses:['Write and edit code','Fix bugs','Explore a large codebase'],say:'Find where we handle sign-in, explain how it works, and suggest one safe improvement.'},
@@ -1605,7 +1718,8 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
     ['Prompt','What you type to Claude. It can include instructions, questions, examples, and pasted material.'],
     ['Research','A mode where Claude runs many searches and writes a longer, sourced report.'],
     ['Scheduled task','A job Claude runs later or on a repeat schedule you set. Each run starts fresh, with no memory of the chat that created it.'],
-    ['Skill','A saved set of instructions for doing a certain kind of task well.'],
+    ['Skill','A saved set of instructions for doing a certain kind of task well. Claude uses it when a task calls for it.'],
+    ['Task list','A checklist Claude keeps during a longer job so you can see what is done and what is left.'],
     ['Token','A small chunk of text, roughly a short word or part of one. Models read and write in tokens.'],
     ['Web search','A setting that lets Claude look up current information online.']
   ];
@@ -1628,6 +1742,73 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
   });
 
   /* ---------- plain-language helpers ---------- */
+  /* ---------- skills and hand-off builders ---------- */
+  (function(){
+    var SIT=[
+      ['I explain the same steps every week',true,'Yes. A repeated procedure is exactly what a skill is for. Write the steps once.'],
+      ['I want a one-off summary',false,'No. Just ask in a normal prompt. A skill is for things you will repeat.'],
+      ['Claude should always answer briefly',false,'Not a skill. Put that in Preferences so it applies everywhere.'],
+      ['My team needs reports in one format',true,'Yes. A skill keeps the format consistent, and a plugin can share it with the team.'],
+      ['One project has its own background facts',false,'Use Project instructions. They hold facts for one body of work.']
+    ];
+    var chips=$('#skchips'),res=$('#skresult');
+    SIT.forEach(function(x){
+      var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},x[0]);
+      b.addEventListener('click',function(){
+        $$('#skchips .chip').forEach(function(c){c.setAttribute('aria-pressed','false')});
+        b.setAttribute('aria-pressed','true');
+        res.hidden=false;res.innerHTML='';
+        res.appendChild(el('b',null,x[1]?'Good fit for a skill. ':'Probably not a skill. '));
+        res.appendChild(document.createTextNode(x[2]));
+      });
+      chips.appendChild(b);
+    });
+    function lines(v){return v.split('\n').map(function(t){return t.trim()}).filter(Boolean)}
+    function kebab(v){return (v.toLowerCase().replace(/[^a-z0-9]+/g,'-').replace(/^-+|-+$/g,''))||'my-skill'}
+    function sk(){
+      var n=$('#sk_name').value.trim()||'My skill';
+      var out=['---','name: '+kebab(n),'description: Use when '+($('#sk_when').value.trim()||'the task comes up'),'---','','# '+n,'','## Steps'];
+      var st=lines($('#sk_steps').value);if(!st.length)st=['Describe the first step'];
+      st.forEach(function(t,i){out.push((i+1)+'. '+t)});
+      var o=$('#sk_out').value.trim();if(o){out.push('','## Output',o)}
+      var r=lines($('#sk_rules').value);
+      if(r.length){out.push('','## Rules');r.forEach(function(t){out.push('- '+t)})}
+      $('#skout').textContent=out.join('\n');
+    }
+    ['sk_name','sk_when','sk_steps','sk_out','sk_rules'].forEach(function(id){$('#'+id).addEventListener('input',sk)});
+    sk();
+
+    var HO=[
+      ['Research a topic',['Compare three project-management tools for a 10-person team','A recommendation I will take to my manager on Friday','A one-page comparison table plus a short recommendation, with sources linked','Use only current public information; no purchases','Pick the most reasonable reading, and tell me which one you chose'],],
+      ['Tidy a folder',['Sort my Downloads folder into folders by type and year','Finding files faster','A plan first, then the sorted folders, with a list of what moved','Do not delete anything; save results next to the originals','Ask me before moving anything you are not sure about']],
+      ['Build a deck',['Turn my meeting notes into a 6-slide update','Presenting to my team on Monday','A finished deck with one idea per slide and a short speaker note on each','Use only facts from my notes','Flag any gaps instead of guessing']],
+      ['Weekly summary',['Summarize what changed in my project folder this week','A Monday catch-up for me','A short list of new and changed files with one line on each','Read only; make no changes','If a file cannot be read, list it and move on']]
+    ];
+    var ids=['ho_goal','ho_use','ho_done','ho_limits','ho_unsure'];
+    function ho(){
+      var v=ids.map(function(i){return $('#'+i).value.trim()});
+      var o=['Please handle this task from start to finish.','Goal: '+(v[0]||'(describe the outcome)')];
+      if(v[1])o.push('What it is for: '+v[1]);
+      if(v[2])o.push('Done looks like: '+v[2]);
+      if(v[3])o.push('Limits: '+v[3]);
+      if(v[4])o.push('If something is unclear: '+v[4]);
+      o.push('Show me your task list first, and summarize what you did at the end.');
+      $('#hoout').textContent=o.join('\n');
+    }
+    ids.forEach(function(i){$('#'+i).addEventListener('input',ho)});
+    var hc=$('#hochips');
+    function setHO(k){
+      HO[k][1].forEach(function(t,j){$('#'+ids[j]).value=t});
+      $$('#hochips .chip').forEach(function(c,j){c.setAttribute('aria-pressed',j===k?'true':'false')});
+      ho();
+    }
+    HO.forEach(function(x,k){
+      var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},x[0]);
+      b.addEventListener('click',function(){setHO(k)});hc.appendChild(b);
+    });
+    setHO(0);
+  })();
+
   var SHORT={
     meet:['Claude is an AI assistant you chat with. You type what you need and it replies. You can also attach files.','A very well-read helper that can write, explain, and plan with you. It can still make mistakes, so check anything important.'],
     prompting:['The more you tell Claude about what you want, the better its answer.','Briefing a new helper. A clear brief gets a better result than a one-line note.'],
@@ -1638,8 +1819,10 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
     search:['Claude knows a lot, but not today news. Turn on web search when you need up-to-date answers.','Someone very well read who has been offline since a certain date. Search lets them look things up again.'],
     customize:['Memory and preferences help Claude remember you, so you do not have to repeat yourself.','Telling your regular coffee shop your usual order once, so you do not have to say it every time.'],
     extend:['Connectors let Claude reach your apps. Skills teach it your way of doing a task. Plugins bundle both.','A connector is a key to a room. A skill is a recipe card. A plugin is a toolbox holding both. MCP is the standard shape that lets the keys fit.'],
+    skills:['A skill is a short written recipe for one kind of task. Claude uses it when the task comes up, so you do not re-explain.','A recipe card in your kitchen drawer. You write it once and use it every time you cook that dish.'],
     connect:['You connect an app once, sign in on its own page, and turn it on in a chat. You stay in control of what Claude can do.','Giving a house sitter a key. You choose which rooms they can enter, and you can take the key back.'],
     organize:['In the desktop app, Claude can tidy folders and repeat jobs on a schedule. You approve changes first.','An assistant who sorts your filing cabinet, but shows you the plan before moving anything.'],
+    delegate:['For bigger jobs, describe the result you want. Claude plans the steps, works through them, and returns finished files.','Briefing a capable assistant before you leave for the day. A clear goal, a finish line, and limits get you what you wanted.'],
     everywhere:['Claude comes in several products. Most people only need the Claude app.',null],
     habits:['Check important facts, protect private information, and start a fresh chat for a new topic.',null]
   };
@@ -1664,8 +1847,10 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
     search:['When is web search most useful?',['For up-to-date information like news and prices','For explaining how something works in general','Never'],0,'Anything that may have changed recently is worth a search.'],
     customize:['What does memory do?',['Lets Claude carry useful details between chats, if the setting is on','Deletes your chats','Changes the model'],0,'You control it in Settings, and you can ask Claude to forget something.'],
     extend:['In the key-and-recipe comparison, a skill is closest to which one?',['A key to a room','A recipe card that tells Claude how you do a task','A toolbox'],1,'A connector is the key, a skill is the recipe card, and a plugin is the toolbox holding both.'],
+    skills:['When is a skill worth creating?',['For a one-off question','For a task you repeat with the same steps and output','For facts about your life'],1,'Repeated procedures are what skills are for. Facts about you belong in preferences or memory.'],
     connect:['When you connect an app, what do you do on the app own sign-in page?',['Give Claude your password','Sign in and approve the access you want to allow','Nothing'],1,'You sign in with the app itself and choose the access. Claude does not see your password.'],
     organize:['What is the safest first request when tidying a folder?',['Ask for a plan, with no changes yet','Ask Claude to delete everything messy','Move it all to the desktop'],0,'A plan first lets you catch mistakes before any file moves.'],
+    delegate:['What should a good hand-off include?',['Only the first step','The goal, what done looks like, and any limits','Nothing, Claude will guess'],1,'A clear finish line and limits let Claude work on its own and still land where you wanted.'],
     everywhere:['Where should most new users start?',['The Claude app on web, desktop, or mobile','The developer API','A terminal coding tool'],0,'The Claude app covers chat, files, Projects, and creating things.'],
     habits:['Before you rely on a number Claude gave you, what should you do?',['Check it against the original source','Assume it is right','Ask again until it agrees'],0,'Claude can be confidently wrong, so check what matters.']
   };
@@ -1747,16 +1932,38 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
     window.addEventListener('scroll',hidePop,{passive:true});
   })();
 
+  /* header height, so the sticky menu sits just below it */
+  function setTop(){var t=$('.top');if(t)document.documentElement.style.setProperty('--topH',t.offsetHeight+'px')}
+  window.addEventListener('resize',setTop);
+  window.addEventListener('load',setTop);
+  if(document.fonts&&document.fonts.ready)document.fonts.ready.then(setTop);
+
   /* text size */
   (function(){
-    var btns=$$('.tsize button');
+    var btns=$$('#sizectl button');
     function apply(v){
       document.documentElement.style.fontSize=v+'%';
       btns.forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-fs')===String(v)?'true':'false')});
       store.set('fs',v);
+      setTop();
     }
     btns.forEach(function(b){b.addEventListener('click',function(){apply(+b.getAttribute('data-fs'))})});
     apply(store.get('fs',100));
+  })();
+
+  /* color theme: Light, Dark, or Auto (follows your device) */
+  (function(){
+    var root=document.documentElement,host=root.getAttribute('data-theme');
+    var btns=$$('#themectl button');
+    function apply(m){
+      if(m==='light'||m==='dark')root.setAttribute('data-theme',m);
+      else if(host)root.setAttribute('data-theme',host);
+      else root.removeAttribute('data-theme');
+      btns.forEach(function(b){b.setAttribute('aria-pressed',b.getAttribute('data-mode')===m?'true':'false')});
+      store.set('theme',m);
+    }
+    btns.forEach(function(b){b.addEventListener('click',function(){apply(b.getAttribute('data-mode'))})});
+    apply(store.get('theme','auto'));
   })();
 
   /* ---------- boot ---------- */
@@ -1767,5 +1974,6 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
   window.addEventListener('hashchange',function(){var h=location.hash.replace('#','');if(h&&h!==current)show(h)});
 })();
 </script>
+
 </body>
 </html>
