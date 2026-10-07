@@ -715,6 +715,32 @@ Ask me if something is unclear</textarea></label>
           <p class="why">Paste the draft into a chat and ask Claude to polish it, then add it under Customize, then Skills. Menu names and who can add skills depend on your plan, so check the help center if yours looks different.</p>
         </div>
 
+        <div class="panel" id="libuild">
+          <div class="panel-title"><h3>Worked example: a personal LinkedIn post from something you read</h3><span>Using a LinkedIn writing skill</span></div>
+          <ol class="steps">
+            <li><span><b>Find a skill.</b> Open Customize, then Skills, and browse the skill directory for a LinkedIn or social-post writing skill. Check who published it before you add it. Directories and plan options differ, so if you cannot find one, use the Skill builder above to write your own.</span></li>
+            <li><span><b>Turn it on</b> and start a new chat. Claude will use the skill when you ask for a LinkedIn post.</span></li>
+            <li><span><b>Bring your source.</b> Paste your own notes or a short summary of the book, blog post, or news story. For a book, use your highlights, not whole chapters.</span></li>
+            <li><span><b>Add the personal part.</b> This is what makes the post sound like you: where you saw the idea in your own work, or what changed your mind.</span></li>
+            <li><span><b>Ask for a draft,</b> then edit it in your own voice. You review it and post it yourself.</span></li>
+          </ol>
+          <p style="color:var(--muted);margin:14px 0 8px"><b style="color:var(--text)">Try it.</b> Pick what you read, then fill in the boxes.</p>
+          <div class="chips" id="lichips" role="group" aria-label="What did you read"></div>
+          <div class="sched">
+            <label for="li_src">Title and author or site<input type="text" id="li_src"></label>
+            <label for="li_take">The idea that stuck with you<input type="text" id="li_take"></label>
+            <label for="li_pers">Your personal angle<textarea id="li_pers" rows="3"></textarea></label>
+            <label for="li_aud">Who will read it<input type="text" id="li_aud"></label>
+            <label for="li_tone">Tone<select id="li_tone"><option>Warm and reflective</option><option>Practical and direct</option><option>Curious, with a question at the end</option></select></label>
+          </div>
+          <div class="prompt"><div class="prompt-head"><span>Ask Claude</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="liout"></p></div>
+          <div class="callout"><b>What a good draft sounds like</b><span>A short opening line that makes someone stop scrolling. Then the idea in one or two sentences, your own moment ("last month I..."), one takeaway, and a closing question. About 120 to 200 words, with no buzzwords.</span></div>
+          <div class="grid">
+            <div class="card"><span class="tag warn">Keep it honest</span><h3>Do not let Claude invent your story</h3><p>Give it a true detail, even a small one. If you leave it out, the post turns generic. Check any quote or number against the source.</p></div>
+            <div class="card"><span class="tag go">Good habit</span><h3>Name the source</h3><p>Credit the author or link the article. Summarize in your own words rather than copying passages.</p></div>
+          </div>
+        </div>
+
         <div class="grid">
           <div class="card"><span class="tag go">Already built in</span><h3>File skills</h3><p>Claude already has skills for making Word documents, PowerPoint decks, Excel sheets, and PDFs, which is why it can hand you finished files.</p></div>
           <div class="card"><h3>Tips for good skills</h3><ul><li>One skill, one job</li><li>Say when it should be used</li><li>Describe the finished result, not only the steps</li><li>Test it on a small example first</li></ul></div>
@@ -1778,6 +1804,28 @@ Ask me if something is unclear</textarea></label>
     ['sk_name','sk_when','sk_steps','sk_out','sk_rules'].forEach(function(id){$('#'+id).addEventListener('input',sk)});
     sk();
 
+    var LI=[
+      ['A book',['Atomic Habits by James Clear','Tiny changes add up when you make them easy to repeat','I started a 10-minute morning review at work and kept it for a month','Colleagues and peers in my field','Warm and reflective']],
+      ['A blog post',['A blog post on writing clear emails','Lead with the ask in the first line','I rewrote a long email to my team and got an answer in an hour','Managers and team leads','Practical and direct']],
+      ['A news story',['A news story on AI tools at work','Teams get the most from AI when they share what works','Our team swapped prompts last week and saved real time','Professionals curious about AI','Curious, with a question at the end']]
+    ];
+    var liIds=['li_src','li_take','li_pers','li_aud'];
+    function li(){
+      var v=liIds.map(function(i){return $('#'+i).value.trim()});
+      var o=['Use the LinkedIn skill to write a draft post for me.','Source: '+(v[0]||'(what you read)'),'The idea that stuck with me: '+(v[1]||'(your takeaway)'),'My personal angle, which you must keep true and not embellish: '+(v[2]||'(a real moment from your work)'),'Audience: '+(v[3]||'(who will read it)'),'Tone: '+$('#li_tone').value,'Keep it under 200 words, with a strong first line and a closing question. Do not invent facts or quotes, and tell me what to check before I post.'];
+      $('#liout').textContent=o.join('\n');
+    }
+    liIds.forEach(function(i){$('#'+i).addEventListener('input',li)});
+    $('#li_tone').addEventListener('change',li);
+    var lc=$('#lichips');
+    function setLI(k){
+      LI[k][1].slice(0,4).forEach(function(t,j){$('#'+liIds[j]).value=t});
+      $('#li_tone').value=LI[k][1][4];
+      $$('#lichips .chip').forEach(function(c,j){c.setAttribute('aria-pressed',j===k?'true':'false')});
+      li();
+    }
+    LI.forEach(function(x,k){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},x[0]);b.addEventListener('click',function(){setLI(k)});lc.appendChild(b)});
+    setLI(0);
     var HO=[
       ['Research a topic',['Compare three project-management tools for a 10-person team','A recommendation I will take to my manager on Friday','A one-page comparison table plus a short recommendation, with sources linked','Use only current public information; no purchases','Pick the most reasonable reading, and tell me which one you chose'],],
       ['Tidy a folder',['Sort my Downloads folder into folders by type and year','Finding files faster','A plan first, then the sorted folders, with a list of what moved','Do not delete anything; save results next to the originals','Ask me before moving anything you are not sure about']],
