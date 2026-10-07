@@ -276,6 +276,31 @@ td.use{min-width:200px}
 .steps li::before{content:counter(st);width:28px;height:28px;border-radius:50%;background:var(--accent);color:var(--on-accent);display:grid;place-items:center;font-weight:600;font-size:.85rem}
 .sched{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
 .sched label{display:flex;flex-direction:column;gap:4px;font-size:.88rem;font-weight:600}
+.dash{display:flex;flex-direction:column;gap:14px;background:var(--surface2);border-radius:12px;padding:16px}
+.bar{display:grid;grid-template-columns:70px 1fr 64px;align-items:center;gap:10px;font-size:.92rem}
+.bar i{display:block;height:16px;border-radius:5px;background:var(--c1);min-width:2px}
+.bar:nth-child(2) i{background:var(--c2)}.bar:nth-child(3) i{background:var(--c5)}
+.bar b{text-align:right;font-variant-numeric:tabular-nums}
+.stage{display:grid;gap:10px}
+.mono td,.mono th{font-family:var(--font-mono);font-size:.85rem;white-space:nowrap}
+.pipe{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:.9rem}
+.pipe span{background:var(--surface);border:1px solid var(--line);border-radius:8px;padding:6px 10px}
+.pipe em{color:var(--muted);font-style:normal}
+.cmp{background:var(--surface2);border:1px solid var(--line);border-radius:12px;padding:12px 14px;display:flex;flex-direction:column;gap:8px}
+.cmp .typed{font-family:var(--font-mono);font-size:.92rem;min-height:1.5em;word-break:break-word}
+.cmp .caret{display:inline-block;width:2px;height:1.1em;background:var(--accent);vertical-align:text-bottom;animation:bl 1s steps(2) infinite}
+@keyframes bl{50%{opacity:0}}
+.menu{display:flex;flex-direction:column;gap:2px;background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:6px;max-height:none;overflow:auto}
+.menu button{display:grid;grid-template-columns:minmax(0,250px) 1fr;gap:10px;text-align:left;background:transparent;border:0;border-radius:8px;padding:8px 10px;cursor:pointer;min-height:40px}
+.menu button:hover,.menu button[aria-pressed="true"]{background:var(--accent-soft)}
+.menu code{background:transparent;padding:0;font-weight:600;color:var(--accent)}
+.menu small{color:var(--muted)}
+.menu .star{color:var(--warm);font-weight:600}
+@media (max-width:560px){.menu button{grid-template-columns:1fr;gap:2px}}
+.stepnav{display:flex;flex-wrap:wrap;gap:8px}
+.dtl{display:grid;gap:12px}
+.lookfor{background:var(--good-soft);border-radius:10px;padding:10px 14px}
+.lookfor b{color:var(--good)}
 .sched textarea{grid-column:auto;font-weight:400;min-height:84px}
 .sched select,.sched input{grid-column:auto;font-weight:400;width:100%;background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:8px 10px;min-width:0}
 
@@ -297,10 +322,10 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
 <div class="wrap">
   <header class="top">
     <div class="top-row">
-      <div class="brand">Claude Learning Guide<small>Sixteen short lessons in four parts, each with something to try</small></div>
+      <div class="brand">Claude Learning Guide<small>Twenty-one short lessons in five parts, each with something to try</small></div>
       <div class="tsize" id="sizectl" role="group" aria-label="Text size"><span>Text size</span><button type="button" data-fs="100" aria-pressed="true" aria-label="Normal text" style="font-size:.85rem">A</button><button type="button" data-fs="118" aria-pressed="false" aria-label="Large text" style="font-size:1.05rem">A</button><button type="button" data-fs="136" aria-pressed="false" aria-label="Extra large text" style="font-size:1.25rem">A</button></div>
       <div class="tsize" id="themectl" role="group" aria-label="Color theme"><span>Theme</span><button type="button" class="tx" data-mode="light" aria-pressed="false">Light</button><button type="button" class="tx" data-mode="dark" aria-pressed="false">Dark</button><button type="button" class="tx" data-mode="auto" aria-pressed="true">Auto</button></div>
-      <div class="prog"><div class="meter" role="progressbar" aria-label="Lessons completed" aria-valuemin="0" aria-valuemax="16" id="meterbox"><span id="meterfill"></span></div><div class="prog-label" id="proglabel">0 of 16 done</div></div>
+      <div class="prog"><div class="meter" role="progressbar" aria-label="Lessons completed" aria-valuemin="0" aria-valuemax="21" id="meterbox"><span id="meterfill"></span></div><div class="prog-label" id="proglabel">0 of 21 done</div></div>
     </div>
   </header>
 
@@ -314,7 +339,7 @@ kbd,code{font-family:var(--font-mono);font-size:.88em;background:var(--surface2)
         <div>
           <div class="eyebrow">Start here</div>
           <h2>Learn Claude, one step at a time</h2>
-          <p class="lead" style="margin-top:10px">Sixteen short lessons in four parts, each with something to try. Go in order, or jump to what you need.</p>
+          <p class="lead" style="margin-top:10px">Twenty-one short lessons in five parts, each with something to try. Go in order, or jump to what you need.</p>
         </div>
         <div class="short"><span class="lbl">How this guide works</span>
           <p><b>1.</b> Read the short version at the top of each lesson. <b>2.</b> Try the interactive example. <b>3.</b> Answer the quick check at the bottom.</p>
@@ -864,11 +889,113 @@ Ask me if something is unclear</textarea></label>
         <div class="pager" data-for="organize"></div>
       </section>
 
+      <!-- 9B2 DATA PLUGINS -->
+      <section class="lesson" id="dataplugins" hidden>
+        <div>
+          <div class="eyebrow">Lesson 13</div>
+          <h2>Data example: from messy sheet to automated dashboard</h2>
+          <p class="lead" style="margin-top:10px">Got an Excel sheet full of typos, mixed date formats, and blank rows? With a data plugin, Claude can clean it, find the story in it, build a dashboard, and rebuild that dashboard on a schedule. Follow one realistic example from start to finish.</p>
+        </div>
+      
+        <div class="panel">
+          <div class="panel-title"><h3>What a data plugin adds</h3><span>Anthropic publishes one called Data</span></div>
+          <div class="tablewrap"><table>
+            <thead><tr><th>Piece</th><th>What it does for your spreadsheet</th></tr></thead>
+            <tbody>
+              <tr><td><b>Skills</b></td><td>Explore a dataset, validate it, run statistics, create charts, and build a dashboard, all in a consistent way.</td></tr>
+              <tr><td><b>Connectors</b></td><td>Link to data tools such as Snowflake, BigQuery, Databricks, Hex, and Amplitude, for data that lives in a database instead of a file.</td></tr>
+              <tr><td><b>Your Excel file</b></td><td>No connector needed. Attach the sheet or connect its folder and the same skills work on it.</td></tr>
+            </tbody>
+          </table></div>
+          <p class="why">Plugins are in the directory under Customize, then Plugins, and what you can add depends on your plan. If you cannot add one, the same steps work with plain prompts, because Claude already has spreadsheet and chart skills.</p>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>How to install one</h3><span>The same for every role</span></div>
+          <ol class="steps">
+            <li><span><b>Open Customize, then Plugins,</b> and choose Discover. Menu names can change, so check the help center if yours looks different.</span></li>
+            <li><span><b>Search by role or name,</b> such as Finance, Legal, Sales, Enterprise Search, or Data.</span></li>
+            <li><span><b>Check who published it.</b> The directory shows whether it comes from Anthropic, a partner company, or the community. Prefer Anthropic or a partner you recognize.</span></li>
+            <li><span><b>Add it,</b> then connect the apps it lists, such as Slack, Gmail, or your data warehouse. You sign in on each app's own page.</span></li>
+            <li><span><b>Try the first prompt,</b> and set the permission for each connected tool: Always allow, Needs approval, or Blocked.</span></li>
+          </ol>
+          <p class="why">On Team and Enterprise plans an Owner may need to approve plugins first. Anything that sends email, updates records, or posts to chat should stay on Needs approval.</p>
+        </div>
+        <div class="panel" id="sample">
+          <div class="panel-title"><h3>Get the sample sheet</h3><span>A realistic, messy March sales file</span></div>
+          <p style="color:var(--muted)">Download it and attach it to your chat so you can follow every step with real numbers. It has the problems you see in real exports.</p>
+          <div class="chips" id="sheetchips" role="group" aria-label="Which version to preview"></div>
+          <div class="tablewrap" style="max-height:340px;overflow:auto"><table class="mono"><thead id="sth"></thead><tbody id="stb"></tbody></table></div>
+          <p class="why" id="swhy"></p>
+          <div class="chips"><button type="button" class="btn small" id="dlm">Download sales-march.xlsx</button><button type="button" class="btn ghost small" id="dlc">Download the cleaned answer</button><button type="button" class="btn ghost small" id="cpy">Copy the messy data as text</button></div>
+          <p class="why" id="dlmsg" aria-live="polite">If a download is blocked where you are viewing this page, use Copy, then paste into a new Excel sheet.</p>
+          <details class="deeper"><summary>What is wrong with the messy sheet</summary><div>
+            <ul>
+              <li>A title row and a blank row above the real headers, and headers with stray spaces</li>
+              <li>Dates in four styles: real dates, <code>3/2/26</code>, <code>March 3</code>, and text like <code>2026-03-04</code></li>
+              <li>Region and customer names written many ways ("north", "NORTH", "Acme", "acme inc")</li>
+              <li>19 amounts stored as text, some with $ signs and commas</li>
+              <li>Two orders with no amount (<code>N/A</code> and <code>TBD</code>) and four with no quantity</li>
+              <li>One duplicated order, one blank row, and a subtotal row in the middle</li>
+              <li>A hand-typed Total at the bottom that says 99,999</li>
+            </ul></div></details>
+        </div>
+        <div class="panel">
+          <div class="panel-title"><h3>Using the plugin in a chat</h3><span>The slash menu</span></div>
+          <ol class="steps">
+            <li><span><b>Install the Data plugin</b> (steps above).</span></li>
+            <li><span><b>Start a new chat</b> and attach your Excel file with the + button, or connect the folder it lives in.</span></li>
+            <li><span><b>Type a forward slash</b> (<code>/</code>) in the message box. A menu opens listing the commands from your installed plugins.</span></li>
+            <li><span><b>Pick the one you want.</b> Plugin commands are shown as <code>plugin:command</code>, such as <code>data:explore-data</code>. Choose it from the menu rather than typing it, since names can differ slightly in your version.</span></li>
+            <li><span><b>Add your instruction after the command,</b> then send. You can keep chatting normally between commands.</span></li>
+          </ol>
+        </div>
+        <div class="panel" id="story">
+          <div class="panel-title"><h3>The example, start to finish</h3><span>Step through it</span></div>
+          <p style="color:var(--muted)"><b style="color:var(--text)">The situation.</b> You get <code>sales-march.xlsx</code> every week and it is a mess, like the sample above. Your manager wants a clean one-page dashboard each Monday.</p>
+          <div class="stepnav" id="stepnav" role="group" aria-label="Example step"></div>
+          <div class="dtl" id="sdtl">
+            <div class="cmp"><div class="typed" id="styped"></div></div>
+            <div class="prompt"><div class="prompt-head"><span id="slabel">Prompt</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="sprompt"></p></div>
+            <div class="result" id="sresult"></div>
+            <div class="lookfor" id="slook"></div>
+            <div class="dash" id="sdash" hidden aria-label="Dashboard preview"></div>
+
+            <div class="chips"><button type="button" class="btn ghost small" id="exprev">Back</button><button type="button" class="btn small" id="exnext">Next step</button></div>
+          </div>
+        </div>
+        <div class="panel" id="slashbox">
+          <div class="panel-title"><h3>All the commands</h3><span>Tap one to see it in the message box</span></div>
+          <div class="cmp" aria-live="polite">
+            <div class="typed" id="typed"><span class="caret"></span></div>
+            <div class="menu" id="menu" role="group" aria-label="Data plugin commands"></div>
+          </div>
+          <div class="dtl" id="dtl" hidden>
+            <div class="prompt"><div class="prompt-head"><span id="dlabel">Prompt</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="dprompt"></p></div>
+            <p id="dwhat" style="margin:0"></p>
+            <div class="lookfor" id="dlook"></div>
+          </div>
+        </div>
+        <div class="panel" id="rolebox">
+          <div class="panel-title"><h3>Other jobs, other plugins</h3><span>Same idea, different specialist</span></div>
+          <p style="color:var(--muted)">Plugins are made for kinds of work. Choose yours to see what it does, what it connects to, and a first prompt.</p>
+          <div class="chips" id="rolechips" role="group" aria-label="Your role"></div>
+          <div class="result" id="roleres" hidden></div>
+          <div class="prompt" id="roleprompt" hidden><div class="prompt-head"><span>First prompt to try</span><button class="btn ghost small copy">Copy</button></div><p class="prompt-text" id="rolepl"></p></div>
+        </div>
+        <div class="callout"><b>Menus differ</b><span>If a command is missing, the plugin may not be installed or enabled. Check Customize, then Plugins. You can always describe the same job in plain words.</span></div>
+        <div class="grid">
+          <div class="card"><span class="tag go">Safe habit</span><h3>Keep the original</h3><p>Always ask for a cleaned copy. Compare a few totals with the original before you trust the dashboard.</p></div>
+          <div class="card"><span class="tag warn">Know this</span><h3>Scheduled runs start fresh</h3><p>The task prompt must name the file, the checks, and the output. The computer or data source also has to be reachable when it runs.</p></div>
+          <div class="card"><span class="tag warn">Privacy</span><h3>Think before you share</h3><p>A dashboard is a web page with a link. It starts private. Remove names, salaries, and customer details before sharing it with anyone.</p></div>
+        </div>
+        <div class="pager" data-for="dataplugins"></div>
+      </section>
+
       <!-- 9C DELEGATE -->
       <section class="lesson" id="delegate" hidden>
         <div>
-          <div class="eyebrow">Lesson 13</div>
-          <h2>Hand off bigger tasks</h2>
+          <div class="eyebrow">Lesson 14</div>
+          <h2>Delegate: hand off a big job</h2>
           <p class="lead" style="margin-top:10px">Beyond chat, Claude can take on a multi-step job, work through it on its own, and come back with finished files. You describe the outcome, check in when you like, and review the result.</p>
         </div>
 
@@ -911,7 +1038,7 @@ Ask me if something is unclear</textarea></label>
 
         <div class="callout"><b>Stay safe</b><span>Start with tasks that read and write new files. Keep approvals on for anything that sends, deletes, or changes things in your apps, and review the result before you rely on it.</span></div>
         <div class="grid">
-          <div class="card"><h3>Related lessons</h3><div class="chips"><button type="button" class="btn ghost small" data-goto="organize">Folders and schedules</button><button type="button" class="btn ghost small" data-goto="connect">Connect apps</button><button type="button" class="btn ghost small" data-goto="skills">Skills</button></div></div>
+          <div class="card"><h3>Related lessons</h3><div class="chips"><button type="button" class="btn ghost small" data-goto="organize">Folders and schedules</button><button type="button" class="btn ghost small" data-goto="connect">Connect apps</button><button type="button" class="btn ghost small" data-goto="skills">Skills</button><button type="button" class="btn ghost small" data-goto="dataplugins">Plugins for data</button></div></div>
         </div>
         <div class="pager" data-for="delegate"></div>
       </section>
@@ -919,7 +1046,7 @@ Ask me if something is unclear</textarea></label>
       <!-- 9 EVERYWHERE -->
       <section class="lesson" id="everywhere" hidden>
         <div>
-          <div class="eyebrow">Lesson 14</div>
+          <div class="eyebrow">Lesson 15</div>
           <h2>Where Claude lives</h2>
           <p class="lead" style="margin-top:10px">The main Claude app runs on web, desktop, and mobile. There are also tools for coding, browsing, and team work. Choose what you're trying to do and see which fits.</p>
         </div>
@@ -935,7 +1062,7 @@ Ask me if something is unclear</textarea></label>
       <!-- 9 HABITS -->
       <section class="lesson" id="habits" hidden>
         <div>
-          <div class="eyebrow">Lesson 15</div>
+          <div class="eyebrow">Lesson 16</div>
           <h2>Using Claude well</h2>
           <p class="lead" style="margin-top:10px">A few habits separate people who get steady value from people who get stuck.</p>
         </div>
@@ -960,9 +1087,9 @@ Ask me if something is unclear</textarea></label>
       <!-- 10 QUIZ -->
       <section class="lesson" id="quiz" hidden>
         <div>
-          <div class="eyebrow">Lesson 16</div>
+          <div class="eyebrow">Lesson 17</div>
           <h2>Check yourself</h2>
-          <p class="lead" style="margin-top:10px">Nineteen questions. You get an explanation after each answer.</p>
+          <p class="lead" style="margin-top:10px">Twenty-one questions. You get an explanation after each answer.</p>
         </div>
         <div class="panel" id="quizbox"></div>
         <div class="pager" data-for="quiz"></div>
@@ -1021,6 +1148,7 @@ Ask me if something is unclear</textarea></label>
     ['start','Start here','Get comfortable with the basics.'],
     ['work','Everyday work','Use Claude for real tasks.'],
     ['extend','Extend Claude','Connect your tools and automate.'],
+    ['real','Real-time examples','Follow real jobs from start to finish.'],
     ['further','Go further','Where to use it, good habits, and a quiz.']
   ];
   var LESSONS=[
@@ -1035,8 +1163,13 @@ Ask me if something is unclear</textarea></label>
     ['extend','Plugins, connectors, MCP','8 min','extend','How plugins, connectors, skills, and MCP fit together.'],
     ['skills','Skills','6 min','extend','Teach Claude a repeatable way of doing a task, and draft your first skill.'],
     ['connect','Connect your apps','7 min','extend','Connect Gmail, GitHub, Slack, and Drive, step by step.'],
-    ['organize','Organize and automate','7 min','extend','Clean up folders on your computer and schedule repeat jobs.'],
-    ['delegate','Hand off bigger tasks','6 min','extend','Let Claude work through a multi-step job, and brief it well.'],
+    ['organize','Organize and automate','7 min','real','Clean up folders on your computer and schedule repeat jobs.'],
+    ['delegate','Delegate: hand off a big job','6 min','real','Let Claude work through a multi-step job, and brief it well.'],
+    ['dataplugins','Data: messy sheet to dashboard','10 min','real','Clean a messy Excel sheet, build a dashboard, and automate it with the Data plugin.'],
+    ['ex-finance','Finance: reconcile the bank','8 min','real','Match a bank statement to the ledger and draft adjusting entries with the Finance plugin.'],
+    ['ex-legal','Legal: triage an NDA','8 min','real','Check an incoming NDA against your standard terms with the Legal plugin.'],
+    ['ex-sales','Sales: pipeline and forecast','8 min','real','Review a pipeline export and write the forecast with the Sales plugin.'],
+    ['ex-find','Enterprise Search: find the answer','8 min','real','Search Slack, email, and Notion for one answer with the Enterprise Search plugin.'],
     ['everywhere','Where Claude lives','3 min','further','Which Claude product fits what you are trying to do.'],
     ['habits','Using it well','4 min','further','Fixes for common problems, plus verifying and protecting data.'],
     ['quiz','Check yourself','5 min','further','Test what you learned, with an explanation after each answer.']
@@ -1432,7 +1565,7 @@ Ask me if something is unclear</textarea></label>
     {name:'GitHub',
       unlocks:['Look through repositories','Read issues and pull requests','Summarize what changed and why'],
       prompts:['List the open issues labeled bug in my project and group them by theme.','Summarize the last five merged pull requests and flag any that touch sign-in or payments.'],
-      care:'Start with reading. Put anything that creates issues, comments, or changes code on Needs approval. If GitHub is missing from your directory, ask your Owner or check whether it offers a remote MCP server for a custom connector. To edit code in a project, Claude Code is the better tool (see lesson 14).'},
+      care:'Start with reading. Put anything that creates issues, comments, or changes code on Needs approval. If GitHub is missing from your directory, ask your Owner or check whether it offers a remote MCP server for a custom connector. To edit code in a project, Claude Code is the better tool (see lesson 19).'},
     {name:'Slack',
       unlocks:['Search channels and messages','Read threads','Post messages and create canvases'],
       prompts:['Search the #launch channel for decisions made this week and list each with who made it.','Draft a status update for #team from my notes below. Show it to me first and do not post it.'],
@@ -1570,7 +1703,9 @@ Ask me if something is unclear</textarea></label>
     ['Roughly how big is one token in English?',['A single letter','A short word or part of one, about four characters','A whole paragraph'],1,'Rough rule: about four characters, or three quarters of a word, per token.'],
     ['What counts toward the context window?',['Only your latest message','Your messages, attached files, Claude replies, and other material in the chat','Only attached files'],1,'Everything Claude has to consider shares the same window, so long chats and big files fill it.'],
     ['Where do you put a fact that should apply in every chat, such as "keep answers short"?',['A skill','Preferences','A scheduled task'],1,'Preferences apply everywhere. Skills are for repeatable procedures.'],
-    ['Before handing off a bigger task, which request is best?',['Do my project','Goal, what done looks like, and limits','Only a list of clicks to make'],1,'Describe the outcome and the limits. Claude plans the steps.']
+    ['Before handing off a bigger task, which request is best?',['Do my project','Goal, what done looks like, and limits','Only a list of clicks to make'],1,'Describe the outcome and the limits. Claude plans the steps.'],
+    ['Before you add a plugin from the directory, what should you check?',['Who published it, and which apps it connects to','Its icon color','How long your chats are'],0,'Prefer plugins from Anthropic or a partner you recognize, and review the apps and permissions it asks for.'],
+    ['Why does a scheduled spreadsheet job need complete instructions?',['Each run starts fresh and does not remember the chat','Claude forgets the spreadsheet format','It makes the run faster'],0,'A scheduled task has no memory of the chat that created it, so name the file, the checks, and the output.']
   ];
   (function(){
     var box=$('#quizbox');var i=0,score=0;
@@ -1626,9 +1761,10 @@ Ask me if something is unclear</textarea></label>
     {n:'Incognito chats',c:'Personalize',what:'A chat that runs without memory, for when you want a clean slate.',uses:['Sensitive questions','Testing a prompt fresh','Avoiding carry-over'],say:'Treat this as a fresh start. Give me a neutral first take on this decision.'},
     {n:'Connectors',c:'Connect',what:'Link apps like Gmail, Slack, and Google Drive so Claude can work with your real data.',uses:['Summarize email threads','Search team channels','Find documents'],say:'Find the thread about the venue contract in my email and summarize it in 3 bullets.',where:'Customize, then Connectors. See lesson 11.'},
     {n:'MCP servers',c:'Connect',what:'The standard behind connectors. A service runs an MCP server, and Claude connects to it to read and act in that service.',uses:['Add a custom connector by server address','Reach an internal tool','Let developers build their own'],say:'List the tools this connector offers, and tell me which ones can send or change things.',where:'Customize, then Connectors, then Add custom connector. See lesson 9.'},
-    {n:'Skills and plugins',c:'Connect',what:'Skills are saved instructions for a kind of task. Plugins bundle skills, connectors, and more into one install.',uses:['Build files your team way','Repeat a workflow reliably','Share a process'],say:'Use my weekly-report skill on the notes below.',where:'Customize, then Skills or Plugins. See lessons 9 and 10.'},
+    {n:'Skills and plugins',c:'Connect',what:'Skills are saved instructions for a kind of task. Plugins bundle skills, connectors, and more into one install.',uses:['Build files your team way','Repeat a workflow reliably','Share a process'],say:'Use my weekly-report skill on the notes below.',where:'Customize, then Skills or Plugins. See lessons 9, 10, and 14.'},
     {n:'Connected folders',c:'Automate',what:'Through the Claude desktop app, give Claude access to folders on your computer.',uses:['Sort and rename files','Build an index spreadsheet','Write reports from your files'],say:'Look at the folder I connected. Do not change anything yet. Propose a tidy structure and wait for my OK.',where:'Open the chat in the desktop app and connect a folder. See lesson 12.'},
     {n:'Scheduled tasks',c:'Automate',what:'Jobs Claude runs later or on a repeat. Each run starts fresh.',uses:['A Monday summary','A monthly receipt sort','A weekday morning plan'],say:'Set up a scheduled task: every weekday at 8:30 AM, summarize new files in my connected folder.'},
+    {n:'Role plugins',c:'Connect',what:'Plugins made for a kind of work: Data, Finance, Legal, Sales, and Enterprise Search, each with skills and the apps they use.',uses:['Reconcile and review numbers','Triage contracts','Prep sales calls and forecasts','Search across email, chat, and docs'],say:'Explore this spreadsheet, validate it, and build a dashboard of revenue by region.',where:'Customize, then Plugins, then Discover. See lesson 14.'},
     {n:'Longer tasks',c:'Automate',what:'Hand off a multi-step job. Claude plans it, works through it with a task list, and returns finished files.',uses:['Research with a written summary','Turn notes into a deck','Sort a folder after you approve a plan'],say:'Please handle this task from start to finish. Goal: ... Done looks like: ... Limits: ...',where:'Chat, with the desktop app for files on your computer. See lesson 13.'},
     {n:'Computer use',c:'Automate',what:'With the desktop app and your permission, Claude can see your screen and operate apps on your computer.',uses:['Work across several apps','Tasks in apps with no connector','Repetitive clicking'],say:'Open my notes app and list the titles of everything I wrote this month.',where:'Needs the Claude desktop app. It is for apps on your computer, not websites.'},
     {n:'Browser tasks',c:'Automate',what:'Claude can act on websites through the built-in browser or Claude in Chrome.',uses:['Fill in a form','Collect details across sites','Use pages that need your sign-in'],say:'Open the pricing pages for these three tools and put the plans in a table. Ask me before submitting anything.'},
@@ -1738,6 +1874,7 @@ Ask me if something is unclear</textarea></label>
     ['Memory','Details Claude can carry from past chats into new ones, when the setting is on.'],
     ['Model','A specific version of Claude, such as Haiku, Sonnet, Opus, or Fable.'],
     ['OAuth','A sign-in method where you approve access on the service own page, so the app connecting to it never receives your password.'],
+    ['Dashboard','A single page of key numbers and charts that shows the answer to a question at a glance. Claude can build one from your data.'],
     ['Plugin','An installable package that can bundle skills, connectors, commands, and agents for a role, tool, or team.'],
     ['Preferences','Your standing instructions for tone, detail, and format.'],
     ['Project','A workspace with its own files and instructions shared by the chats inside it.'],
@@ -1857,6 +1994,223 @@ Ask me if something is unclear</textarea></label>
     setHO(0);
   })();
 
+  /* ---------- data plugin lesson ---------- */
+  (function(){
+  var D={"raw": [["SALES - MARCH 2026 (draft v3)", "", "", "", "", ""], ["", "", "", "", "", ""], ["Date ", "Region", "Customer", "Product", "Qty ", "Amount"], ["2026-03-02", "north", "acme inc", "Widgets", "10", "1200"], ["3/2/26", "South ", "Brightco", "Gadgets", "4", "$2,100.00"], ["March 3", "EAST", "COBALT", "Service plan", "1", "$1,500"], ["2026-03-03", "west", "Delta Foods ", "Widgets", "", "720"], ["3/4/26", "North ", "acme inc", "Gadgets", "3", "950"], ["March 4", "South", "Brightco", "Widgets", "8", "$960"], ["2026-03-05", "WEST", "Delta Foods", "Service plan", "1", "1,800"], ["3/5/26", "EAST", "Cobalt", "Gadgets", "5", "1250"], ["", "", "", "", "", ""], ["March 6", "NORTH", "evergreen", "Widgets", "12", "1440"], ["2026-03-06", "south", "Brightco", "Service plan", "1", "$1,500.00"], ["3/9/26", "East", "COBALT", "Widgets", "", "480"], ["March 9", "WEST", "Delta Foods ", "Gadgets", "2", "640"], ["March 4", "South", "Brightco", "Widgets", "8", "$960"], ["2026-03-10", "North", "acme inc", "Service plan", "1", "$1,500.00"], ["3/10/26", "SOUTH", "Fieldstone", "Gadgets", "6", "$1,890"], ["March 11", "east", "Greenway ", "Widgets", "9", "1,080"], ["2026-03-11", "West", "Delta Foods ", "Widgets", "7", "$840.00"], ["", "Subtotal (wk 1-2)", "", "", "", "=SUM later"], ["3/12/26", "north", "evergreen", "Gadgets", "4", "$1,260"], ["March 12", "South ", "Brightco", "Widgets", "", "600"], ["2026-03-13", "EAST", "COBALT", "Service plan", "1", "N/A"], ["3/13/26", "west", "Harbor Co", "Gadgets", "3", "945"], ["March 16", "North ", "acme inc", "Widgets", "8", "960"], ["2026-03-16", "South", "Fieldstone", "Service plan", "1", "TBD"], ["3/17/26", "East", "Greenway ", "Gadgets", "2", "630"], ["March 17", "West ", "Harbor Co", "Widgets", "10", "$1,200.00"], ["2026-03-18", "NORTH", "evergreen", "Service plan", "", "$1,500"], ["3/18/26", "south", "Brightco", "Gadgets", "3", "1050"], ["", "", "", "", "", ""], ["", "Total", "", "", "", "99999"]], "clean": [["2026-03-02", "North", "Acme", "Widgets", 10, 1200], ["2026-03-02", "South", "Brightco", "Gadgets", 4, 2100], ["2026-03-03", "East", "Cobalt", "Service plan", 1, 1500], ["2026-03-03", "West", "Delta Foods", "Widgets", 6, 720], ["2026-03-04", "North", "Acme", "Gadgets", 3, 950], ["2026-03-04", "South", "Brightco", "Widgets", 8, 960], ["2026-03-05", "West", "Delta Foods", "Service plan", 1, 1800], ["2026-03-05", "East", "Cobalt", "Gadgets", 5, 1250], ["2026-03-06", "North", "Evergreen", "Widgets", 12, 1440], ["2026-03-06", "South", "Brightco", "Service plan", 1, 1500], ["2026-03-09", "East", "Cobalt", "Widgets", 4, 480], ["2026-03-09", "West", "Delta Foods", "Gadgets", 2, 640], ["2026-03-10", "North", "Acme", "Service plan", 1, 1500], ["2026-03-10", "South", "Fieldstone", "Gadgets", 6, 1890], ["2026-03-11", "East", "Greenway", "Widgets", 9, 1080], ["2026-03-11", "West", "Delta Foods", "Widgets", 7, 840], ["2026-03-12", "North", "Evergreen", "Gadgets", 4, 1260], ["2026-03-12", "South", "Brightco", "Widgets", 5, 600], ["2026-03-13", "West", "Harbor Co", "Gadgets", 3, 945], ["2026-03-16", "North", "Acme", "Widgets", 8, 960], ["2026-03-17", "East", "Greenway", "Gadgets", 2, 630], ["2026-03-17", "West", "Harbor Co", "Widgets", 10, 1200], ["2026-03-18", "North", "Evergreen", "Service plan", 1, 1500], ["2026-03-18", "South", "Brightco", "Gadgets", 3, 1050]], "n": 24, "tot": 27995, "by": {"North": 8810, "South": 8100, "East": 4940, "West": 6145}};
+  var B64M="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",B64C="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";
+  function money(n){return "$"+Math.round(n).toLocaleString("en-US")}
+  var REG=Object.keys(D.by).sort(function(a,b){return D.by[b]-D.by[a]});
+  var TOT=D.tot,N=D.n,AVG=TOT/N,TOP=REG[0];
+  var EX=[
+    ['1 Explore','/data:explore-data','/data:explore-data Look at the attached sales-march.xlsx. Describe each column, count blank and odd values, and list anything that looks wrong. Do not change anything.','Claude reports: 27 order rows (one is a duplicate), plus a title row, blank rows, a subtotal row, and a typed Total of 99,999. Dates come in four styles. Region names are written 15 different ways. 19 amounts are stored as text. Two amounts are missing (N/A and TBD) and four quantities are blank. Nothing was changed.','Does the list match the sample sheet? If Claude missed a problem, tell it.'],
+    ['2 Clean and validate','/data:validate-data','Make a cleaned copy of sales-march.xlsx and leave the original untouched. Fix dates, region and customer names, and turn amounts into numbers. Remove duplicates, blank rows, and the subtotal and Total rows. Put orders with no amount on a Needs review tab. Then run /data:validate-data on the copy.','Claude reports: '+N+' valid orders, total '+money(TOT)+'. Removed the title, blank rows, subtotal, the typed Total, and one duplicate ($960). Two orders with no amount are on a Needs review tab. A Changes tab lists every fix. The sheet\'s own Total of 99,999 does not match the real sum.','The total equals the original amounts after removing the duplicate, and every removed or moved row is listed. You can compare with the cleaned file you can download above.'],
+    ['3 Analyze','/data:analyze','/data:analyze Which region sells the most, and how big is the gap? Show the calculation behind every number.','Claude reports: '+TOP+' leads with '+money(D.by[TOP])+' ('+Math.round(D.by[TOP]/TOT*100)+'% of sales), then '+REG[1]+' '+money(D.by[REG[1]])+', '+REG[2]+' '+money(D.by[REG[2]])+', and '+REG[3]+' '+money(D.by[REG[3]])+'. Two orders have no amount, one East and one South, so those regions may be understated.','You can recompute the numbers, and Claude names the missing-amount caveat instead of hiding it.'],
+    ['4 Chart','/data:create-viz','/data:create-viz Make a bar chart of sales by region, sorted from high to low, with value labels.','Claude draws a sorted bar chart: '+REG.map(function(r){return r+' '+money(D.by[r])}).join(', ')+'.','Labels are readable, bars start at zero, and the chart shows the same numbers as step 3.'],
+    ['5 Dashboard','/data:build-dashboard','/data:build-dashboard For my manager: four key numbers on top (total sales, orders, average order, top region), then sales by region. Add a note that two orders need review. One page, plain language, no jargon.','Claude builds a one-page dashboard: '+money(TOT)+' total sales, '+N+' orders, '+money(AVG)+' average order, '+TOP+' as top region, the regional bars, and a note that two orders need review. You can open it, share it, and ask for changes.','Every number on the dashboard matches step 3. Preview below.'],
+    ['6 Automate','Scheduled task','Set up a scheduled task that runs every Monday at 8:00 AM. Each run: open the newest sales file in my Sales folder, use the Data plugin to inspect it, make a cleaned copy, check that the cleaned total equals the sum of the original amounts after removing duplicates, and rebuild the dashboard. Finish with a three-line summary of what changed since last week and a list of orders that need review. Each run starts fresh, so follow these steps exactly. If a check fails or anything looks wrong, stop and tell me instead of guessing.','Every Monday at 8:00, a fresh dashboard, a three-line summary, and a short list of orders that need review are waiting. If the check fails, the run stops and says why.','Watch the first run. The computer or folder must be reachable at that time, and a run may pause if it needs your approval.']
+  ];
+  function drawDash(){
+    var d=$('#sdash');d.innerHTML='';
+    var st=el('div',{class:'stats'});
+    [['Total sales',money(TOT)],['Orders',String(N)],['Average order',money(AVG)],['Top region',TOP]].forEach(function(x){var c=el('div');c.appendChild(el('span',{class:'stat'},x[1]));c.appendChild(el('small',null,x[0]));st.appendChild(c)});
+    d.appendChild(st);d.appendChild(el('b',null,'Sales by region'));
+    var box=el('div',{style:'display:grid;gap:8px'}),max=D.by[TOP];
+    REG.forEach(function(k){var r=el('div',{class:'bar'});r.appendChild(el('span',null,k));var w=el('div'),i=el('i');i.style.width=(D.by[k]/max*100)+'%';w.appendChild(i);r.appendChild(w);r.appendChild(el('b',null,money(D.by[k])));box.appendChild(r)});
+    d.appendChild(box);d.appendChild(el('small',{style:'color:var(--muted)'},'2 orders need review (no amount), so East and South may be understated.'));
+  }
+  drawDash();
+  var sheet=0;
+  function drawSheet(k){
+    sheet=k;var th=$('#sth'),tb=$('#stb');th.innerHTML='';tb.innerHTML='';
+    var H=['Date','Region','Customer','Product','Qty','Amount'];
+    var tr=el('tr');tr.appendChild(el('th',null,'#'));H.forEach(function(h){tr.appendChild(el('th',null,h))});th.appendChild(tr);
+    var rows=k===0?D.raw:[H].concat(D.clean.map(function(r){return r.map(String)}));
+    if(k===0){rows=D.raw.slice(0)}
+    rows.forEach(function(r,i){var t=el('tr');t.appendChild(el('td',null,String(i+1)));r.forEach(function(c,j){t.appendChild(el('td',null,c===''?'':c))});tb.appendChild(t)});
+    $('#swhy').textContent=k===0?'Messy original: '+D.raw.length+' rows, scroll to see all of it.':'Cleaned copy: '+N+' valid orders, ready to analyze.';
+    Array.prototype.forEach.call(document.querySelectorAll('#sheetchips .chip'),function(c,i){c.setAttribute('aria-pressed',i===k?'true':'false')});
+  }
+  ['Messy (what you receive)','Cleaned (the goal)'].forEach(function(t,i){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},t);b.addEventListener('click',function(){drawSheet(i)});$('#sheetchips').appendChild(b)});
+  drawSheet(0);
+  function dl(b64,name){
+    var msg=$('#dlmsg'),blob;
+    try{
+      var bin=atob(b64),u=new Uint8Array(bin.length);for(var i=0;i<bin.length;i++)u[i]=bin.charCodeAt(i);
+      blob=new Blob([u],{type:'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'});
+    }catch(e){msg.textContent='Could not prepare the file. Use Copy instead.';return}
+    function anchor(){
+      try{var a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.appendChild(a);a.click();a.remove();msg.textContent='Download started: '+name+'. If nothing happened, use Copy instead.'}
+      catch(e){msg.textContent='Your viewer blocked the download. Use Copy, then paste into a new Excel sheet.'}
+    }
+    if(window.claude&&window.claude.use){
+      window.claude.use('downloads').then(function(D){
+        if(!D){anchor();return}
+        D.save({filename:name,data:blob}).then(function(){msg.textContent='Saved: '+name},function(e){msg.textContent=(e&&e.code==='declined')?'Save cancelled.':'Your viewer blocked the download. Use Copy, then paste into a new Excel sheet.'});
+      },anchor);
+    }else anchor();
+  }
+  $('#dlm').addEventListener('click',function(){dl(B64M,'sales-march.xlsx')});
+  $('#dlc').addEventListener('click',function(){dl(B64C,'sales-march-clean.xlsx')});
+  $('#cpy').addEventListener('click',function(){
+    var t=D.raw.map(function(r){return r.join('\t')}).join('\n');
+    try{navigator.clipboard.writeText(t).then(function(){$('#dlmsg').textContent='Copied. Paste into cell A1 of a new Excel sheet.'},function(){$('#dlmsg').textContent='Copy was blocked. Select the table above and copy it by hand.'})}catch(_){$('#dlmsg').textContent='Copy was blocked. Select the table above and copy it by hand.'}
+  });
+  var exi=0,sn=$('#stepnav');
+  function showEx(k){
+    exi=k;var e=EX[k];
+    Array.prototype.forEach.call(sn.children,function(c,i){c.setAttribute('aria-pressed',i===k?'true':'false')});
+    var t=$('#styped');t.textContent=(e[1].charAt(0)==='/'?e[1]+' ':'No slash command: ask in plain words ');t.appendChild(el('span',{class:'caret'}));
+    $('#slabel').textContent='Prompt · '+e[0];$('#sprompt').textContent=e[2];
+    var r=$('#sresult');r.innerHTML='';r.appendChild(el('b',null,'What comes back. '));r.appendChild(document.createTextNode(e[3]));
+    var l=$('#slook');l.innerHTML='';l.appendChild(el('b',null,'Check: '));l.appendChild(document.createTextNode(e[4]));
+    $('#sdash').hidden=(k!==4);
+    $('#exprev').disabled=k===0;$('#exnext').textContent=k===EX.length-1?'Start over':'Next step';
+  }
+  EX.forEach(function(e,k){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},e[0]);b.addEventListener('click',function(){showEx(k)});sn.appendChild(b)});
+  $('#exprev').addEventListener('click',function(){if(exi>0)showEx(exi-1)});
+  $('#exnext').addEventListener('click',function(){showEx(exi===EX.length-1?0:exi+1)});
+  showEx(0);
+  var CMD=[
+    ['explore-data','1','Get to know the sheet: columns, types, blanks, odd values.','/data:explore-data Look at the attached sales-march.xlsx. Describe each column, count blank and odd values, and list anything that looks wrong. Do not change anything.','A profile of the data and a list of problems, with no edits.','Every column named. Counts for blanks, mixed date formats, and numbers stored as text. If it missed a problem you can see, say so.'],
+    ['validate-data','2','Check quality before you trust the numbers.','/data:validate-data Check the cleaned copy of sales-march.xlsx: duplicates, impossible values, missing amounts, and whether the total equals the sum of the original amounts after removing duplicates.','A pass or fail style check with the issues found.','The total equals the original amounts minus duplicates. Any row Claude dropped or moved is listed.'],
+    ['analyze','3','Answer your question with the data.','/data:analyze Which region sells the most, and how is it changing week to week? Show the calculation behind every number.','Findings in plain language, backed by calculations.','Numbers you can recompute. If a finding rests on only a few rows, Claude should say so.'],
+    ['create-viz','4','Choose and draw the right chart.','/data:create-viz Make a bar chart of sales by region, sorted from high to low, with value labels. Add a line chart of weekly sales.','One or two charts that fit the question.','Readable labels, bars that start at zero, and no decoration that hides the message.'],
+    ['build-dashboard','5','Put key numbers and charts on one page.','/data:build-dashboard For my manager: four key numbers on top, then sales by region and a weekly trend. One page, plain language, no jargon.','A dashboard page you can open, share, and ask to change.','Every number on it matches your step 3 findings. Ask for changes in plain words.'],
+    ['statistical-analysis','','Test whether a difference is real or just noise.','/data:statistical-analysis Is the gap between North and East a real difference, or could it be chance with 24 orders?','A careful read on significance, with caveats.','A plain-language caveat about sample size.'],
+    ['write-query','','Write SQL when your data lives in a database.','/data:write-query Write a query for weekly sales by region from the sales table.','A SQL query you can review before running.','You read it before it runs. This needs a connected data tool such as Snowflake or BigQuery.'],
+    ['data-context-extractor','','Teach Claude what your company means by its terms.','/data:data-context-extractor Here is how we define "sales", "active customer", and "region". Remember these for the next steps.','A saved set of definitions to reuse.','Definitions in your own words, so later answers use the same meaning.']
+  ];
+  var menu=$('#menu'),typed=$('#typed');
+  CMD.forEach(function(c,k){
+    var b=el('button',{type:'button','aria-pressed':'false'});
+    var l=el('code',null,'data:'+c[0]);if(c[1]){var st=el('span',{class:'star'},'  ★'+c[1]);l.appendChild(st)}
+    b.appendChild(l);b.appendChild(el('small',null,c[2]));
+    b.addEventListener('click',function(){
+      Array.prototype.forEach.call(menu.children,function(x,i){x.setAttribute('aria-pressed',i===k?'true':'false')});
+      typed.textContent='/data:'+c[0]+' ';typed.appendChild(el('span',{class:'caret'}));
+      $('#dtl').hidden=false;$('#dlabel').textContent='Prompt'+(c[1]?' · step '+c[1]:'');$('#dprompt').textContent=c[3];
+      $('#dwhat').textContent='You get: '+c[4];
+      var lk=$('#dlook');lk.innerHTML='';lk.appendChild(el('b',null,'Check: '));lk.appendChild(document.createTextNode(c[5]));
+    });
+    menu.appendChild(b);
+  });
+  typed.textContent='/';typed.appendChild(el('span',{class:'caret'}));
+  var ROLES=[
+    ['Data','Data','Explore a dataset, check its quality, write SQL, and build charts and dashboards.','Snowflake, BigQuery, Databricks, Hex, Amplitude, Atlassian','Explore this spreadsheet, validate it, and build a dashboard of revenue by region with the three most important findings.','Good for messy exports, trends, and dashboards you want to refresh.'],
+    ['Finance','Finance','Journal entries, reconciliation, financial statements, variance analysis, month-end close, and audit prep.','BigQuery, Snowflake, Databricks, Gmail, Google Calendar, Slack','Reconcile the bank export against our ledger sheet and list the unmatched items. Then compare actuals to budget and explain the biggest variances.','Numbers should be checked by someone accountable before they go into a close or an audit.'],
+    ['Legal','Legal','Contract review, NDA triage, compliance checks, legal briefs, and vendor checks for in-house teams.','Box, DocuSign, Egnyte, Gmail, Google Calendar, Slack, Atlassian','Triage this NDA against our standard terms and flag any clause a lawyer should look at. Then add it to my contract tracker sheet.','Claude helps you work faster, but it is not a lawyer. A qualified person should review anything that matters.'],
+    ['Enterprise search','Enterprise Search','Search across email, chat, documents, and wikis in one place, and pull the results into a digest.','Slack, Gmail, Notion, Atlassian, Asana, Guru, Google Calendar','Find everything we have said about the Q3 pricing change across Slack, email, and Notion. Give me a short digest and say which sheet has the latest numbers.','It can only search the apps you connect, and only what your own account can already see.'],
+    ['Sales','Sales','Call prep, account research, pipeline review, forecasts, lead triage, and outreach drafts.','Salesforce, HubSpot, Gmail, Google Calendar, Slack, Gong, Notion, and more','Clean up this pipeline export, review the open deals, flag the ones at risk, and write a short forecast narrative for Monday.','It can update records and send email when you ask, so keep those actions on Needs approval.']
+  ];
+  var rc=$('#rolechips');
+  ROLES.forEach(function(r,k){
+    var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},r[0]);
+    b.addEventListener('click',function(){
+      Array.prototype.forEach.call(document.querySelectorAll('#rolechips .chip'),function(c,i){c.setAttribute('aria-pressed',i===k?'true':'false')});
+      var res=$('#roleres');res.hidden=false;res.innerHTML='';
+      res.appendChild(el('b',null,r[1]+' plugin. '));res.appendChild(document.createTextNode(r[2]));
+      var l=el('p',{style:'margin:8px 0 0'});l.appendChild(el('b',null,'Connects to: '));l.appendChild(document.createTextNode(r[3]));res.appendChild(l);
+      var n=el('p',{style:'margin:8px 0 0'});n.appendChild(el('b',null,'Keep in mind: '));n.appendChild(document.createTextNode(r[5]));res.appendChild(n);
+      var RID={'Finance':'ex-finance','Legal':'ex-legal','Sales':'ex-sales','Enterprise search':'ex-find'};
+      if(RID[r[0]]){var cb=el('div',{class:'chips',style:'margin-top:10px'});cb.appendChild(el('button',{type:'button',class:'btn ghost small','data-goto':RID[r[0]]},'See the worked example'));res.appendChild(cb)}
+      $('#roleprompt').hidden=false;$('#rolepl').textContent=r[4];
+    });
+    rc.appendChild(b);
+  });
+  })();
+
+  /* ---------- real-time example lessons ---------- */
+  var EXL=[
+    {id:'ex-finance',plugin:'Finance',pid:'finance',title:'Finance: reconcile the bank to the books',
+     lead:'Month-end starts with a simple question: does the bank statement agree with the ledger? Follow a small, realistic reconciliation from the first match to draft adjusting entries.',
+     skills:[['reconciliation','Match two sources and list what does not agree'],['journal-entry-prep','Draft adjusting entries for review'],['variance-analysis','Explain differences against budget or last period'],['close-management','Track the month-end close checklist'],['audit-support','Assemble support for auditors']],
+     note:'March, 10 lines each. Amounts in dollars.',
+     tables:[
+       ['Bank statement',['Date','Description','Amount'],[['03-02','Payroll','-12,400.00'],['03-03','Acme Corp payment','4,500.00'],['03-05','Office rent','-3,200.00'],['03-06','Brightco payment','2,750.00'],['03-09','AWS','-1,184.20'],['03-10','Cobalt payment','1,980.00'],['03-12','Stripe fee','-86.40'],['03-16','Insurance','-640.00'],['03-18','Delta Foods payment','3,300.00'],['03-30','Bank fee','-25.00']]],
+       ['Ledger',['Date','Description','Amount'],[['03-02','Payroll','-12,400.00'],['03-03','Acme inv 1042','4,500.00'],['03-05','Rent','-3,200.00'],['03-06','Brightco inv 1043','2,570.00'],['03-09','AWS','-1,184.20'],['03-10','Cobalt inv 1044','1,980.00'],['03-12','Stripe fees','-86.40'],['03-16','Insurance','-640.00'],['03-20','Office supplies','-212.35'],['03-31','Delta Foods inv 1047','3,300.00']]]],
+     steps:[
+      ['1 Match','/finance:reconciliation Compare the attached bank statement with the March ledger. Match by amount and description. List what matches, and every exception with the dollar difference. Do not change anything.','Claude reports: 7 of 10 bank lines match the ledger exactly. Exceptions: Brightco receipt is $2,750.00 in the bank but $2,570.00 in the ledger (digits look swapped, $180.00 difference). Delta Foods $3,300.00 is dated 03-18 in the bank and 03-31 in the ledger (timing). A $25.00 bank fee on 03-30 is not in the ledger. Office supplies of $212.35 are in the ledger but not on the bank statement. Bank total is -$5,005.60 and ledger total is -$5,372.95.','The exceptions explain the whole gap: $180.00 + $212.35 - $25.00 = $367.35, the difference between the two totals.'],
+      ['2 Explain',null,'For each exception, say the most likely cause and what I should check before fixing it.','Claude suggests: Brightco, a transposed entry, so check invoice 1043 and the remittance. Delta Foods, booked on the wrong date, so confirm the deposit date. Bank fee, simply not recorded yet. Office supplies, probably an uncleared check or a card charge, so look at the card statement.','These are likely causes, not facts. You confirm each one against the source document.'],
+      ['3 Entries','/finance:journal-entry-prep Draft adjusting entries for the exceptions that need one: the bank fee and the Brightco amount. Show debits and credits and leave them as drafts for my review.','Claude drafts: Entry 1, debit Bank fees $25.00, credit Cash $25.00. Entry 2, only if invoice 1043 confirms $2,750.00: debit Cash $180.00, credit Accounts receivable $180.00. No entry for the supplies or the Delta date, since those are timing items.','Debits equal credits in each entry, and nothing is posted until you approve it.'],
+      ['4 Support','/finance:audit-support Write a one-page reconciliation summary for the file: totals, matched items, exceptions with causes, and the entries proposed. Leave a reviewer line.','Claude produces a one-page summary: totals, 7 matched lines, 3 exceptions fully explaining the $367.35 gap, entries marked Draft, and a blank reviewer line.','Every figure traces back to the two tables above, and a person signs off before it goes to anyone.']],
+     care:'Claude can prepare and check the work, but a qualified accountant should approve entries before they are posted. Keep entries as drafts, and never paste bank logins or full account numbers into a chat.'},
+    {id:'ex-legal',plugin:'Legal',pid:'legal',title:'Legal: triage an incoming NDA',
+     lead:'A vendor sends an NDA and wants it signed this week. Follow a first-pass triage: what is fine, what differs from your standard, and what a lawyer needs to see.',
+     skills:[['triage-nda','Sort a new NDA into green, yellow, and red'],['review-contract','Review a contract against your playbook'],['legal-risk-assessment','Rate the risk of specific clauses'],['legal-response','Draft replies to the other side'],['signature-request','Prepare an approved document for signature']],
+     note:'Six clauses from the vendor NDA, next to your standard terms.',
+     tables:[['NDA clauses',['Clause','What the NDA says','Our standard'],[['Term','5 years from disclosure','2 years'],['Definition','All information, marked or not','Information marked or reasonably understood as confidential'],['Governing law','Courts of another country','Our home state'],['Employee non-solicit','24 months, both parties','Not included'],['Direction','Mutual','Mutual'],['Return or destroy','Within 30 days on request','Within 30 days']]]],
+     steps:[
+      ['1 Triage','/legal:triage-nda Triage the attached NDA against our standard terms. Mark each clause green, yellow, or red, and say whether it can go to signature or needs counsel.','Claude reports: Green, direction (mutual) and return or destroy. Yellow, the 5-year term and the broad definition of confidential information. Red, governing law in foreign courts and the employee non-solicit, which is not in your standard. Verdict: needs counsel review before signature.','Each color matches the table, and Claude names the standard it compared against.'],
+      ['2 Risk','/legal:legal-risk-assessment Rate the risk of the two red items for a vendor relationship worth about $50,000 a year. Explain in plain words and mark what you are unsure about.','Claude explains: Governing law could make a dispute slower and costlier, so ask for your home state or a neutral one. The non-solicit could limit hiring from the vendor for 24 months, so ask to remove it or narrow it to named employees. Claude marks one point as uncertain and suggests counsel confirm how the foreign courts would apply it.','Claude flags what it is unsure about instead of sounding certain.'],
+      ['3 Redlines','/legal:review-contract Suggest edits for the red and yellow clauses using our fallback positions.','Claude suggests: term from 5 to 2 years (fallback 3); definition limited to marked or reasonably understood information; governing law your home state (fallback a neutral state); delete the non-solicit (fallback limited to employees who worked on the project).','These are drafts for counsel, and the fallbacks come from your own playbook.'],
+      ['4 Reply','/legal:legal-response Draft a short, polite email to the vendor listing our four requested changes with a one-line reason each, and offer a call.','Claude drafts a short email of about 120 words that lists the four changes, gives a reason for each, and offers a call. It is not sent.','Read it as if you were sending it, and have counsel or an approver sign off first.']],
+     care:'Claude helps you work faster, but it is not a lawyer. A qualified person should review anything binding. The plugin works from your playbook and may not know your latest policy, and confidential documents should only go to connectors your organization approves.'},
+    {id:'ex-sales',plugin:'Sales',pid:'sales',title:'Sales: review the pipeline and write the forecast',
+     lead:'It is Monday and your forecast is due. Follow a pipeline export from a first review to a written forecast and a follow-up email.',
+     skills:[['pipeline-review','Review open deals by stage and flag risk'],['deal-review','Dig into one deal and suggest next steps'],['forecast','Write the forecast with commit and best case'],['draft-outreach','Draft follow-up emails'],['call-prep','Prepare for a customer call']],
+     note:'A CRM export with one real-world gap or two.',
+     tables:[['Pipeline export',['Deal','Stage','Amount','Close date','Last activity'],[['Acme renewal','Negotiation','$48,000','Oct 25','2 days ago'],['Brightco expansion','Proposal','$30,000','Oct 31','21 days ago'],['Cobalt new logo','Discovery','$60,000','Nov 15','12 days ago'],['Delta Foods','Negotiation','$22,000','Oct 18','1 day ago'],['Evergreen','Proposal','$15,000','Oct 30','6 days ago'],['Greenway','Discovery','$9,000','(blank)','4 days ago'],['Harbor Co','Negotiation','$35,000','Oct 28','9 days ago'],['Fieldstone','Closed won','$18,000','Oct 3','-']]]],
+     steps:[
+      ['1 Review','/sales:pipeline-review Review the attached pipeline export. Total the open deals by stage and flag anything stale, missing a close date, or otherwise risky.','Claude reports: Open pipeline is $219,000 across 7 deals. Negotiation $105,000 (3 deals), Proposal $45,000 (2), Discovery $69,000 (2). Flags: Brightco has had no activity for 21 days, Harbor Co for 9, Greenway has no close date, and Cobalt, the largest deal, is still in Discovery.','The totals add up: 48 + 22 + 35 = 105, 30 + 15 = 45, 60 + 9 = 69, and 105 + 45 + 69 = 219 (in thousands).'],
+      ['2 Deals','/sales:deal-review Review Brightco expansion and Harbor Co. What is the risk, and what is the next step for each?','Claude suggests: Brightco has stalled since pricing was requested, so send the pricing and propose a call this week. Harbor Co has a new contact and it is unclear whether they are the buyer, so ask for an intro to the budget owner. Claude says it only knows what is in the sheet and asks for call notes to sharpen the view.','The next steps are specific and tied to a fact in the data.'],
+      ['3 Forecast','/sales:forecast Write the forecast for the month with commit, best case, and what is early. Explain how you grouped the deals.','Claude writes: Commit $105,000 (the three Negotiation deals). Best case $150,000 (adds the two Proposals). Early $69,000 (Discovery), not counted this month. Closed won so far: $18,000. The grouping uses stage only, so adjust it with your own judgment on each deal.','The groups add up (105 + 45 = 150), and Claude says that stage is only a rough guide.'],
+      ['4 Follow up','/sales:draft-outreach Draft a short follow-up email to my Brightco contact, friendly, offering the pricing and a 20 minute call.','Claude drafts about 90 words with a clear subject line, one question, and two proposed times. It is not sent.','Edit it into your own voice. Keep email sending on Needs approval.']],
+     care:'Claude can connect to a CRM such as Salesforce or HubSpot, and it can update records and send email when you ask. Keep those actions on Needs approval, and check any forecast against your CRM before you share it.'},
+    {id:'ex-find',plugin:'Enterprise Search',pid:'enterprise-search',title:'Enterprise Search: find the answer across your tools',
+     lead:'Someone asks what was decided about the Q3 price increase. The answer is scattered across chat, email, a wiki, and a doc. Follow one question from search to a cited answer.',
+     skills:[['source-management','See which apps are connected and searchable'],['search','Search across email, chat, docs, and wikis'],['knowledge-synthesis','Combine results into one cited answer'],['digest','Summarize what is new on a topic'],['search-strategy','Plan a search that finds the right thing']],
+     note:'What a search across five sources might turn up.',
+     tables:[['Search results',['Source','Date','What it says'],[['Slack #pricing','Sep 12','"Proposing an 8% increase for Q3 renewals"'],['Email from the CFO','Sep 14','"Board prefers 6%. Let\'s go with 6."'],['Notion: Pricing FAQ','Sep 20','"Final: 6% increase, effective Nov 1. Existing contracts honored until renewal."'],['Wiki: Pricing policy','Sep 21','Draft section still says 8%; marked outdated'],['Calendar: Pricing review','Sep 22','"Announce to customers Oct 15"']]]],
+     steps:[
+      ['1 Sources','/enterprise-search:source-management Which sources are connected and searchable right now? Tell me what is missing.','Claude reports: Connected and searchable are Slack, Gmail, Notion, Google Calendar, and Atlassian. Not connected are Asana and Guru, so anything stored there will not be found.','You know what the search can and cannot see before you trust a negative result.'],
+      ['2 Search','/enterprise-search:search What did we decide about the Q3 price increase? Search Slack, email, Notion, the wiki, and the calendar. List each result with its source and date.','Claude lists five results: Slack on Sep 12 proposes 8%; the CFO email on Sep 14 says 6%; the Notion FAQ on Sep 20 says final 6% effective Nov 1; the wiki on Sep 21 still shows 8% and is marked outdated; the calendar on Sep 22 notes the customer announcement on Oct 15.','Each result has a source and date you can open yourself.'],
+      ['3 Answer','/enterprise-search:knowledge-synthesis Combine these into one answer. If sources disagree, tell me which is newest and which looks authoritative. Cite each claim.','Claude answers: the increase is 6%, effective Nov 1, with customers told on Oct 15. The 8% in Slack and the wiki is older or outdated. The most authoritative source is the Notion FAQ (newest, labelled final), backed by the CFO email. Each claim has a citation.','The disagreement is named, not hidden, and every claim has a source.'],
+      ['4 Digest','/enterprise-search:digest Each Monday, give me a short digest of anything new about pricing across these sources.','Claude produces a short list of new messages and pages about pricing, grouped by source, with links. To make it recur on its own, ask Claude to set it up as a scheduled task.','Only what your own account can already see appears in the digest.']],
+     care:'It only searches the apps you connect, and only what your own account can already see. Treat the answer as a lead and open the source before you act. Old pages can look current, so check the dates.'}
+  ];
+  EXL.forEach(function(c){
+    c.steps=c.steps.map(function(e){return e.length===4?[e[0],true,e[1],e[2],e[3]]:e});
+    var sec=el('section',{class:'lesson',id:c.id,hidden:''});
+    var hd=el('div');hd.appendChild(el('div',{class:'eyebrow'},'Lesson'));hd.appendChild(el('h2',null,c.title));hd.appendChild(el('p',{class:'lead',style:'margin-top:10px'},c.lead));sec.appendChild(hd);
+    function panel(t,sub){var p=el('div',{class:'panel'}),pt=el('div',{class:'panel-title'});pt.appendChild(el('h3',null,t));if(sub)pt.appendChild(el('span',null,sub));p.appendChild(pt);sec.appendChild(p);return p}
+    function table(cols,rows,mono){
+      var w=el('div',{class:'tablewrap'}),t=el('table',mono?{class:'mono'}:{style:'min-width:0'}),th=el('thead'),tr=el('tr');
+      cols.forEach(function(x){tr.appendChild(el('th',null,x))});th.appendChild(tr);t.appendChild(th);
+      var tb=el('tbody');rows.forEach(function(r){var q=el('tr');r.forEach(function(x,i){var td=el('td');if(mono===false&&i===0){td.appendChild(el('code',null,x))}else td.textContent=x;q.appendChild(td)});tb.appendChild(q)});
+      t.appendChild(tb);w.appendChild(t);return w;
+    }
+    var p1=panel('What the '+c.plugin+' plugin brings','Pick commands from the slash menu');
+    p1.appendChild(table(['Command','What it does'],c.skills.map(function(k){return [c.pid+':'+k[0],k[1]]}),false));
+    var tp=el('p',{class:'why'});tp.appendChild(document.createTextNode('Names can differ a little in your version, so choose from the menu. To add the plugin, see '));
+    var gb=el('button',{type:'button',class:'btn ghost small','data-goto':'dataplugins'},'How to install a plugin');tp.appendChild(gb);p1.appendChild(tp);
+    var p2=panel('The sample data',c.note);
+    c.tables.forEach(function(t){p2.appendChild(el('p',{style:'margin:10px 0 6px;font-weight:600'},t[0]));p2.appendChild(table(t[1],t[2],true))});
+    var p3=panel('The example, start to finish','Step through it');
+    var nav=el('div',{class:'stepnav',role:'group','aria-label':'Example step'});p3.appendChild(nav);
+    var dt=el('div',{class:'dtl'});
+    var cmp=el('div',{class:'cmp'}),typed=el('div',{class:'typed'});cmp.appendChild(typed);dt.appendChild(cmp);
+    var pr=el('div',{class:'prompt'}),ph=el('div',{class:'prompt-head'}),lab=el('span',null,'Prompt');ph.appendChild(lab);ph.appendChild(el('button',{class:'btn ghost small copy'},'Copy'));pr.appendChild(ph);var ptx=el('p',{class:'prompt-text'});pr.appendChild(ptx);dt.appendChild(pr);
+    var res=el('div',{class:'result'}),look=el('div',{class:'lookfor'});dt.appendChild(res);dt.appendChild(look);
+    var bar=el('div',{class:'chips'}),bb=el('button',{type:'button',class:'btn ghost small'},'Back'),bn=el('button',{type:'button',class:'btn small'},'Next step');bar.appendChild(bb);bar.appendChild(bn);dt.appendChild(bar);p3.appendChild(dt);
+    var cur=0;
+    function showStep(k){
+      cur=k;var e=c.steps[k];
+      Array.prototype.forEach.call(nav.children,function(x,i){x.setAttribute('aria-pressed',i===k?'true':'false')});
+      typed.textContent=e[1]===null?'No command needed: ask in plain words ':e[2].split(' ')[0]+' ';
+      typed.appendChild(el('span',{class:'caret'}));
+      lab.textContent='Prompt · '+e[0];ptx.textContent=e[2];
+      res.innerHTML='';res.appendChild(el('b',null,'What comes back. '));res.appendChild(document.createTextNode(e[3]));
+      look.innerHTML='';look.appendChild(el('b',null,'Check: '));look.appendChild(document.createTextNode(e[4]));
+      bb.disabled=k===0;bn.textContent=k===c.steps.length-1?'Start over':'Next step';
+    }
+    c.steps.forEach(function(e,k){var b=el('button',{type:'button',class:'chip','aria-pressed':'false'},e[0]);b.addEventListener('click',function(){showStep(k)});nav.appendChild(b)});
+    bb.addEventListener('click',function(){if(cur>0)showStep(cur-1)});bn.addEventListener('click',function(){showStep(cur===c.steps.length-1?0:cur+1)});
+    showStep(0);
+    var co=el('div',{class:'callout'});co.appendChild(el('b',null,'Keep in mind'));co.appendChild(el('span',null,c.care));sec.appendChild(co);
+    sec.appendChild(el('div',{class:'pager','data-for':c.id}));
+    $('#main').appendChild(sec);
+  });
+
   var SHORT={
     meet:['Claude is an AI assistant you chat with. You type what you need and it replies. You can also attach files.','A very well-read helper that can write, explain, and plan with you. It can still make mistakes, so check anything important.'],
     prompting:['The more you tell Claude about what you want, the better its answer.','Briefing a new helper. A clear brief gets a better result than a one-line note.'],
@@ -1870,7 +2224,12 @@ Ask me if something is unclear</textarea></label>
     skills:['A skill is a short written recipe for one kind of task. Claude uses it when the task comes up, so you do not re-explain.','A recipe card in your kitchen drawer. You write it once and use it every time you cook that dish.'],
     connect:['You connect an app once, sign in on its own page, and turn it on in a chat. You stay in control of what Claude can do.','Giving a house sitter a key. You choose which rooms they can enter, and you can take the key back.'],
     organize:['In the desktop app, Claude can tidy folders and repeat jobs on a schedule. You approve changes first.','An assistant who sorts your filing cabinet, but shows you the plan before moving anything.'],
+    dataplugins:['Give Claude a messy spreadsheet. It checks it, cleans a copy, builds charts and a dashboard, and can repeat the job on a schedule. Role plugins add know-how for finance, legal, sales, search, and data.','Hiring a bookkeeper. They tidy the shoebox of receipts, add it up, hand you a one-page summary, and do it again next month.'],
     delegate:['For bigger jobs, describe the result you want. Claude plans the steps, works through them, and returns finished files.','Briefing a capable assistant before you leave for the day. A clear goal, a finish line, and limits get you what you wanted.'],
+    'ex-finance':['Give Claude your bank statement and your ledger. It matches them, explains what does not agree, and drafts adjusting entries for you to review.','A careful colleague who ticks off both lists line by line and hands you only the items that need a decision.'],
+    'ex-legal':['Give Claude an incoming NDA and your standard terms. It sorts each clause into green, yellow, or red and tells you what a lawyer needs to see.','A first-pass reader who highlights the clauses that differ from your usual contract, so your lawyer only reads what matters.'],
+    'ex-sales':['Give Claude your pipeline export. It totals the deals, flags the risky ones, writes the forecast, and drafts the follow-up email.','A sales manager who reads every deal before the Monday meeting and tells you where to look.'],
+    'ex-find':['Ask one question and Claude searches your connected apps, then combines what it finds into one answer with sources.','A colleague who has read every channel, inbox, and wiki page and tells you where each fact came from.'],
     everywhere:['Claude comes in several products. Most people only need the Claude app.',null],
     habits:['Check important facts, protect private information, and start a fresh chat for a new topic.',null]
   };
@@ -1898,7 +2257,12 @@ Ask me if something is unclear</textarea></label>
     skills:['When is a skill worth creating?',['For a one-off question','For a task you repeat with the same steps and output','For facts about your life'],1,'Repeated procedures are what skills are for. Facts about you belong in preferences or memory.'],
     connect:['When you connect an app, what do you do on the app own sign-in page?',['Give Claude your password','Sign in and approve the access you want to allow','Nothing'],1,'You sign in with the app itself and choose the access. Claude does not see your password.'],
     organize:['What is the safest first request when tidying a folder?',['Ask for a plan, with no changes yet','Ask Claude to delete everything messy','Move it all to the desktop'],0,'A plan first lets you catch mistakes before any file moves.'],
+    dataplugins:['What is the safest first request for a messy spreadsheet?',['Overwrite the file with a cleaned version','Inspect it and list problems, with no changes yet','Share it with your team'],1,'Inspect first, then clean a copy. Your original stays safe and you can compare totals.'],
     delegate:['What should a good hand-off include?',['Only the first step','The goal, what done looks like, and any limits','Nothing, Claude will guess'],1,'A clear finish line and limits let Claude work on its own and still land where you wanted.'],
+    'ex-finance':['Who should approve adjusting entries Claude drafts?',['Nobody, Claude posts them','A qualified person, before anything is posted','The bank'],1,'Claude prepares drafts. A qualified person approves them before they are posted.'],
+    'ex-legal':['In the NDA example, what does a red clause mean?',['The clause is fine','It differs from your standard and needs counsel','The NDA is already signed'],1,'Red means it departs from your standard terms enough that a lawyer should look.'],
+    'ex-sales':['Why does Claude call its forecast a rough guide?',['It groups deals by stage only, so your judgment on each deal still matters','It cannot add numbers','Forecasts are never useful'],0,'Stage is a coarse signal. You know things about each deal that the sheet does not show.'],
+    'ex-find':['When two sources disagree, what should you do?',['Pick the longest one','Check which is newest and most authoritative, and open the source','Average them'],1,'Old pages can look current. Check dates and open the source before you act.'],
     everywhere:['Where should most new users start?',['The Claude app on web, desktop, or mobile','The developer API','A terminal coding tool'],0,'The Claude app covers chat, files, Projects, and creating things.'],
     habits:['Before you rely on a number Claude gave you, what should you do?',['Check it against the original source','Assume it is right','Ask again until it agrees'],0,'Claude can be confidently wrong, so check what matters.']
   };
